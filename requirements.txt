@@ -1,0 +1,11 @@
+# Framework Web
+Flask==3.0.0
+
+# Utilidades de seguridad y manejo de archivos
+# (incluye funciones de hashing de contraseñas y manejo seguro de uploads)
+Werkzeug==3.0.1
+
+# ==========================================
+# INSTALACIÓN:
+# pip install -r requirements.txt
+# ==========================================

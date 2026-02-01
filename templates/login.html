@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="stylesheet" href="/static/login_style.css">
+<title>Inicio de sesión</title>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="container">
+    <div class="logo">
+
+      🏗️ REPORTES CIUDADANOS
+    </div>
+  </div>
+</nav>
+
+<!-- LOGIN -->
+<div class="login-wrapper">
+  <div class="login-shell">
+    <div class="form-card">
+
+      <!-- card header -->
+      <div class="card-header">
+        <div class="icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="8" r="4"/>
+          </svg>
+        </div>
+        <h2>Bienvenido de nuevo</h2>
+        <p>Inicia sesión para continuar</p>
+      </div>
+
+      <!-- form -->
+      <form id="loginForm" method="POST" action="/login">
+
+        <!-- correo -->
+        <div class="form-group">
+          <label for="correo">Correo electrónico</label>
+          <div class="input-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <path d="M22 7l-10 6L2 7"/>
+            </svg>
+            <input type="email" id="correo" name="correo"  required autocomplete="email" />
+          </div>
+        </div>
+
+        <!-- contraseña -->
+        <div class="form-group">
+          <label for="contrasena">Contraseña</label>
+          <div class="input-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <input type="password" id="contrasena" name="contrasena" required autocomplete="current-password" />
+
+          </div>
+        </div>
+
+        <!-- opciones -->
+        <div class="row-options">
+          <label>
+            <input type="checkbox" id="recordar" />
+            Recordarme
+          </label>
+          <a href="#">¿Olvidaste tu contraseña?</a>
+        </div>
+
+        <!-- submit -->
+        <button type="submit" class="btn btn-primary btn-full">Iniciar sesión</button>
+
+        <!-- mensaje de error -->
+        {% if error %}
+        <div id="mensajeLogin" class="mensaje error">{{ error }}</div>
+        {% else %}
+        <div id="mensajeLogin" class="mensaje error oculto"></div>
+        {% endif %}
+      </form>
+
+      <!-- divider + registro -->
+      <div class="divider"><span>o</span></div>
+      <p class="register-link">
+        ¿No tienes cuenta? <a href="#">Regístrate aquí</a>
+      </p>
+
+    </div>
+  </div>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,238 @@
+/* ─── RESET & BASE ─────────────────────── */
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #EDE4C2;
+    color: #333;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ─── NAVBAR (exact match) ─────────────── */
+  .navbar {
+    background-color: #A03A13;
+    color: white;
+    padding: 1rem 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+  }
+  .navbar .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+  }
+  .logo svg { width:28px; height:28px; }
+
+  /* ─── LAYOUT ───────────────────────────── */
+  .login-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 20px;
+  }
+  .login-shell {
+    width: 100%;
+    max-width: 440px;
+    animation: fadeUp .5s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(24px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  /* ─── CARD (matches .form-card) ────────── */
+  .form-card {
+    background: white;
+    padding: 2.4rem 2rem 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.1);
+  }
+
+  /* header inside card */
+  .card-header {
+    text-align: center;
+    margin-bottom: 1.8rem;
+  }
+  .card-header .icon-wrap {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: #A03A13;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+  .card-header .icon-wrap svg { width:30px; height:30px; }
+  .card-header h2 {
+    font-size: 1.5rem;
+    color: #254F22;
+    margin-bottom: .2rem;
+  }
+  .card-header p {
+    color: #666;
+    font-size: .9rem;
+  }
+
+  /* ─── FORM GROUPS (exact match) ────────── */
+  .form-group { margin-bottom: 1.5rem; }
+  .form-group label {
+    display: block;
+    margin-bottom: .5rem;
+    font-weight: 600;
+    color: #254F22;
+  }
+
+  .input-wrap { position: relative; }
+  .input-wrap svg {
+    position: absolute;
+    left: .75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px; height: 18px;
+    color: #aaa;
+    pointer-events: none;
+    transition: color .2s;
+  }
+  .input-wrap:focus-within svg { color: #F5824A; }
+
+  .form-group input {
+    width: 100%;
+    padding: .75rem .75rem .75rem 2.6rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color .2s;
+  }
+  .form-group input:focus {
+    outline: none;
+    border-color: #F5824A;
+  }
+  .form-group input::placeholder { color: #aaa; }
+
+  /* password toggle */
+  .toggle-pass {
+    position: absolute;
+    right: .75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #aaa;
+    width: 20px; height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color .2s;
+  }
+  .toggle-pass:hover { color: #F5824A; }
+
+  /* remember row */
+  .row-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.6rem;
+    font-size: .875rem;
+  }
+  .row-options label {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    color: #555;
+    cursor: pointer;
+    font-weight: 400;
+  }
+  .row-options input[type="checkbox"] {
+    accent-color: #F5824A;
+    width: 16px; height: 16px;
+    cursor: pointer;
+  }
+  .row-options a {
+    color: #F5824A;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .row-options a:hover { text-decoration: underline; }
+
+  /* ─── BUTTONS (exact match) ────────────── */
+  .btn {
+    padding: .75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    font-family: inherit;
+    transition: background-color .2s, transform .1s;
+  }
+  .btn:active { transform: scale(.97); }
+  .btn-primary { background-color: #F5824A; color: white; }
+  .btn-primary:hover { background-color: #A03A13; }
+  .btn-full { width: 100%; }
+
+  /* divider */
+  .divider {
+    display: flex;
+    align-items: center;
+    margin: 1.4rem 0;
+    color: #bbb;
+    font-size: .8rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+  }
+  .divider::before, .divider::after {
+    content:'';
+    flex:1;
+    height:1px;
+    background:#e0e0e0;
+  }
+  .divider span { padding: 0 .75rem; }
+
+  /* register link */
+  .register-link {
+    text-align: center;
+    font-size: .9rem;
+    color: #666;
+  }
+  .register-link a {
+    color: #F5824A;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .register-link a:hover { text-decoration: underline; }
+
+  /* ─── MENSAJES (exact match) ───────────── */
+  .mensaje {
+    padding: 1rem;
+    border-radius: 4px;
+    margin-top: 1rem;
+    font-size: .9rem;
+  }
+  .mensaje.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+  .mensaje.oculto { display: none; }
+
+  /* ─── RESPONSIVE ───────────────────────── */
+  @media (max-width: 480px) {
+    .login-wrapper { padding: 2rem 12px; }
+    .form-card { padding: 1.8rem 1.2rem 1.6rem; }
+  }

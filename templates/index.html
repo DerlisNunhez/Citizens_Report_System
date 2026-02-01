@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes de Infraestructura - Ciudad del Este</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <!-- Navegación -->
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">🏗️ REPORTES CIUDADANOS</h1>
+            <div class="nav-links">
+                <button class="nav-btn active" onclick="mostrarSeccion('crear')">Crear Reporte</button>
+                <button class="nav-btn" onclick="mostrarSeccion('lista')">Ver Reportes</button>
+                {% if rol == 'admin' %}
+                <button class="nav-btn" onclick="mostrarSeccion('analiticas')">Analíticas</button>
+                {% endif %}
+                <a href="/logout" class="nav-btn">Cerrar sesión</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenedor principal -->
+    <div class="container main-content">
+
+        <!-- Sección: Crear Reporte -->
+        <section id="seccion-crear" class="seccion active">
+            <h2>Crear Nuevo Reporte</h2>
+            <p class="descripcion">Reporta baches y problemas de infraestructura en tu comunidad</p>
+
+            <form id="form-crear-reporte" class="form-card">
+                <div class="form-group">
+                    <label for="direccion">📍 Dirección *</label>
+                    <input
+                        type="text"
+                        id="direccion"
+                        name="direccion"
+                        placeholder="Ej: Av. San Blas esquina Monseñor Rodríguez"
+                        required
+                    >
+                    <small>Mínimo 5 caracteres</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="comentario">💬 Descripción del Problema *</label>
+                    <textarea
+                        id="comentario"
+                        name="comentario"
+                        rows="4"
+                        placeholder="Describe el problema: tamaño, ubicación exacta, peligrosidad, etc."
+                        required
+                    ></textarea>
+                    <small>Mínimo 10 caracteres</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="foto">📷 Foto del Problema *</label>
+                    <input
+                        type="file"
+                        id="foto"
+                        name="foto"
+                        accept="image/jpeg,image/png,image/jpg,image/webp"
+                        required
+                    >
+                    <small>Formatos: JPG, PNG, WEBP - Máximo 5MB</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">📧 Email (Opcional)</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="tu@email.com"
+                    >
+                    <small>Para recibir notificaciones sobre tu reporte</small>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Enviar Reporte</button>
+            </form>
+
+            <div id="mensaje-crear" class="mensaje oculto"></div>
+        </section>
+
+        <!-- Sección: Ver Reportes -->
+        <section id="seccion-lista" class="seccion">
+            <h2>Lista de Reportes</h2>
+            <p class="descripcion">Visualiza y gestiona todos los reportes de la comunidad</p>
+
+            <!-- Filtros -->
+            <div class="filtros">
+                <label for="filtro-estado">Filtrar por estado:</label>
+                <select id="filtro-estado" onchange="cargarReportes()">
+                    <option value="Todos">Todos</option>
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="Verificando">Verificando</option>
+                    <option value="Solucionado">Solucionado</option>
+                    <option value="Rechazado">Rechazado</option>
+                </select>
+            </div>
+
+            <!-- Grid de reportes -->
+            <div id="lista-reportes" class="reportes-grid">
+                <p class="cargando">Cargando reportes...</p>
+            </div>
+        </section>
+
+        <!-- Sección: Analíticas (solo admin) -->
+        {% if rol == 'admin' %}
+        <section id="seccion-analiticas" class="seccion">
+            <h2>Analíticas</h2>
+            <p class="descripcion">Estadísticas generales del sistema</p>
+
+            <!-- Estadísticas en tarjetas -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3 id="stat-total">0</h3>
+                    <p>Total Reportes</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="stat-pendiente">0</h3>
+                    <p>Pendientes</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="stat-verificando">0</h3>
+                    <p>Verificando</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="stat-solucionado">0</h3>
+                    <p>Solucionados</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="stat-rechazado">0</h3>
+                    <p>Rechazados</p>
+                </div>
+            </div>
+
+            <!-- Gráfico de barras -->
+            <div class="analiticas-grafico">
+                <h3>Distribución por Estado</h3>
+                <div class="grafico-barra">
+                    <div class="barra-item">
+                        <span class="barra-label">Pendiente</span>
+                        <div class="barra-contenedor">
+                            <div id="barra-pendiente" class="barra estado-pendiente" style="width: 0%"></div>
+                        </div>
+                        <span id="valor-pendiente" class="barra-valor">0</span>
+                    </div>
+                    <div class="barra-item">
+                        <span class="barra-label">Verificando</span>
+                        <div class="barra-contenedor">
+                            <div id="barra-verificando" class="barra estado-verificando" style="width: 0%"></div>
+                        </div>
+                        <span id="valor-verificando" class="barra-valor">0</span>
+                    </div>
+                    <div class="barra-item">
+                        <span class="barra-label">Solucionado</span>
+                        <div class="barra-contenedor">
+                            <div id="barra-solucionado" class="barra estado-solucionado" style="width: 0%"></div>
+                        </div>
+                        <span id="valor-solucionado" class="barra-valor">0</span>
+                    </div>
+                    <div class="barra-item">
+                        <span class="barra-label">Rechazado</span>
+                        <div class="barra-contenedor">
+                            <div id="barra-rechazado" class="barra estado-rechazado" style="width: 0%"></div>
+                        </div>
+                        <span id="valor-rechazado" class="barra-valor">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reportes recientes -->
+            <div class="analiticas-recientes">
+                <h3>Reportes Recientes</h3>
+                <div id="reportes-recientes" class="reportes-grid">
+                    <p class="cargando">Cargando...</p>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+    </div>
+
+    <!-- Modal para ver detalles de un reporte -->
+    <div id="modal-reporte" class="modal oculto">
+        <div class="modal-content">
+            <span class="modal-close" onclick="cerrarModal()">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+    <script src="/static/script.js"></script>
+</body>
+</html>

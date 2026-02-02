@@ -14,21 +14,49 @@ def get_db():
     return conn
 
 
+def migrar_columna_categoria():
+    """Agrega la columna categoria si no existe (migraciÃ³n automÃ¡tica)."""
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        
+        # Verificar si la columna ya existe
+        cursor.execute("PRAGMA table_info(reportes)")
+        columnas = [col[1] for col in cursor.fetchall()]
+        
+        if 'categoria' not in columnas:
+            print("ðŸ”„ Migrando base de datos: agregando columna 'categoria'...")
+            cursor.execute('''
+                ALTER TABLE reportes 
+                ADD COLUMN categoria TEXT NOT NULL DEFAULT 'Otros'
+            ''')
+            conn.commit()
+            print("âœ… Columna 'categoria' agregada exitosamente")
+        
+        conn.close()
+    except Exception as e:
+        print(f"âš ï¸ Error en migraciÃ³n: {e}")
+
+
 def init_db():
     """Inicializa las tablas de la base de datos."""
-    if os.path.exists(DB_PATH):
+    db_existe = os.path.exists(DB_PATH)
+    
+    if db_existe:
         try:
             conn = sqlite3.connect(DB_PATH)
             conn.execute('SELECT name FROM sqlite_master WHERE type="table" AND name="usuarios"')
             tables = conn.execute('SELECT name FROM sqlite_master WHERE type="table"').fetchall()
             conn.close()
             if not tables:
-                # archivo existe pero está vacío → eliminarlo
+                # archivo existe pero estÃ¡ vacÃ­o â†’ eliminarlo
                 os.remove(DB_PATH)
+                db_existe = False
         except Exception:
-            # cualquier error al leer → eliminarlo
+            # cualquier error al leer â†’ eliminarlo
             try:
                 os.remove(DB_PATH)
+                db_existe = False
             except Exception:
                 pass
 
@@ -52,6 +80,7 @@ def init_db():
             comentario      TEXT    NOT NULL,
             foto            TEXT    NOT NULL,
             email           TEXT,
+            categoria       TEXT    NOT NULL DEFAULT 'Otros',
             estado          TEXT    NOT NULL DEFAULT 'Pendiente',
             razon_rechazo   TEXT,
             fecha_creacion  TEXT    NOT NULL,
@@ -62,15 +91,19 @@ def init_db():
     
     conn.commit()
     conn.close()
+    
+    # Si la base de datos ya existÃ­a, ejecutar migraciones automÃ¡ticas
+    if db_existe:
+        migrar_columna_categoria()
 
 
-# ─── FUNCIONES DE USUARIOS ────────────────────────────────────────────
+# â”€â”€â”€ FUNCIONES DE USUARIOS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def crear_usuario(correo, contrasena, rol='usuario'):
     """
     Inserta un nuevo usuario.
-    La contraseña se hashea automáticamente.
-    Retorna True si se creó, False si el correo ya existe.
+    La contraseÃ±a se hashea automÃ¡ticamente.
+    Retorna True si se creÃ³, False si el correo ya existe.
     """
     conn = get_db()
     try:
@@ -98,13 +131,13 @@ def buscar_usuario_por_correo(correo):
 
 
 def verificar_contrasena(contrasena, hash_almacenado):
-    """Compara la contraseña plana contra el hash."""
+    """Compara la contraseÃ±a plana contra el hash."""
     return check_password_hash(hash_almacenado, contrasena)
 
 
-# ─── FUNCIONES DE REPORTES ────────────────────────────────────────────
+# â”€â”€â”€ FUNCIONES DE REPORTES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-def crear_reporte(direccion, comentario, foto, email=None, usuario_correo=None):
+def crear_reporte(direccion, comentario, foto, categoria='Otros', email=None, usuario_correo=None):
     """
     Crea un nuevo reporte.
     Retorna el ID del reporte creado.
@@ -114,9 +147,9 @@ def crear_reporte(direccion, comentario, foto, email=None, usuario_correo=None):
     
     cursor = conn.execute(
         '''INSERT INTO reportes 
-           (direccion, comentario, foto, email, estado, fecha_creacion, usuario_correo)
-           VALUES (?, ?, ?, ?, 'Pendiente', ?, ?)''',
-        (direccion, comentario, foto, email, fecha, usuario_correo)
+           (direccion, comentario, foto, categoria, email, estado, fecha_creacion, usuario_correo)
+           VALUES (?, ?, ?, ?, ?, 'Pendiente', ?, ?)''',
+        (direccion, comentario, foto, categoria, email, fecha, usuario_correo)
     )
     conn.commit()
     reporte_id = cursor.lastrowid
@@ -148,7 +181,7 @@ def obtener_reportes(estado=None):
 
 
 def obtener_reporte_por_id(reporte_id):
-    """Obtiene un reporte específico por su ID."""
+    """Obtiene un reporte especÃ­fico por su ID."""
     conn = get_db()
     reporte = conn.execute(
         'SELECT * FROM reportes WHERE id = ?',
@@ -161,7 +194,7 @@ def obtener_reporte_por_id(reporte_id):
 def actualizar_estado_reporte(reporte_id, nuevo_estado, razon_rechazo=None):
     """
     Actualiza el estado de un reporte.
-    Si el estado es 'Rechazado', debe incluir una razón.
+    Si el estado es 'Rechazado', debe incluir una razÃ³n.
     """
     conn = get_db()
     
@@ -180,9 +213,38 @@ def actualizar_estado_reporte(reporte_id, nuevo_estado, razon_rechazo=None):
     conn.close()
 
 
+def actualizar_categoria_reporte(reporte_id, nueva_categoria):
+    """
+    Actualiza la categorÃ­a de un reporte (solo admin).
+    """
+    conn = get_db()
+    conn.execute(
+        'UPDATE reportes SET categoria = ? WHERE id = ?',
+        (nueva_categoria, reporte_id)
+    )
+    conn.commit()
+    conn.close()
+
+
+def eliminar_reporte(reporte_id):
+    """
+    Elimina un reporte por su ID (solo admin).
+    Retorna True si se eliminÃ³, False si no existÃ­a.
+    """
+    conn = get_db()
+    cursor = conn.execute(
+        'DELETE FROM reportes WHERE id = ?',
+        (reporte_id,)
+    )
+    conn.commit()
+    eliminado = cursor.rowcount > 0
+    conn.close()
+    return eliminado
+
+
 def obtener_estadisticas():
     """
-    Obtiene estadísticas de reportes por estado.
+    Obtiene estadÃ­sticas de reportes por estado.
     Retorna un diccionario con el conteo de cada estado.
     """
     conn = get_db()

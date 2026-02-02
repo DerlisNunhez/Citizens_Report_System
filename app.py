@@ -5,16 +5,16 @@ import os
 from database import (
     init_db, crear_usuario, buscar_usuario_por_correo, verificar_contrasena,
     crear_reporte, obtener_reportes, obtener_reporte_por_id,
-    actualizar_estado_reporte, obtener_estadisticas
+    actualizar_estado_reporte, actualizar_categoria_reporte, eliminar_reporte, obtener_estadisticas
 )
 
 app = Flask(__name__)
 
-# Clave secreta para firmar las cookies de sesión
+# Clave secreta para firmar las cookies de sesiÃ³n
 app.secret_key = 'cambiar_esto_en_produccion_por_una_clave_segura'
 app.config['PROPAGATE_EXCEPTIONS'] = True
 
-# Configuración de uploads
+# ConfiguraciÃ³n de uploads
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp'}
 MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
@@ -27,14 +27,14 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
 def allowed_file(filename):
-    """Verifica si el archivo tiene una extensión permitida."""
+    """Verifica si el archivo tiene una extensiÃ³n permitida."""
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-# ─── DECORADORES DE PROTECCIÓN ────────────────────────────────────────────
+# â”€â”€â”€ DECORADORES DE PROTECCIÃ“N â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def login_requerido(f):
-    """Redirige a login si el usuario no está autenticado."""
+    """Redirige a login si el usuario no estÃ¡ autenticado."""
     @wraps(f)
     def decorado(*args, **kwargs):
         if 'correo' not in session:
@@ -55,11 +55,11 @@ def rol_admin_requerido(f):
     return decorado
 
 
-# ─── RUTAS DE AUTENTICACIÓN ────────────────────────────────────────────────
+# â”€â”€â”€ RUTAS DE AUTENTICACIÃ“N â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @app.route('/')
 def home():
-    """Raíz: si ya logueado va al dashboard, sino al login."""
+    """RaÃ­z: si ya logueado va al dashboard, sino al login."""
     if 'correo' in session:
         return redirect(url_for('dashboard'))
     return redirect(url_for('login'))
@@ -77,17 +77,17 @@ def login():
         usuario = buscar_usuario_por_correo(correo)
 
         if usuario and verificar_contrasena(contrasena, usuario['contrasena']):
-            # ─── LOGIN EXITOSO ───
+            # â”€â”€â”€ LOGIN EXITOSO â”€â”€â”€
             session['correo'] = usuario['correo']
             session['rol']    = usuario['rol']
             session.permanent = True
 
-            # redirigir según rol
+            # redirigir segÃºn rol
             if usuario['rol'] == 'admin':
                 return redirect(url_for('admin'))
             return redirect(url_for('dashboard'))
         else:
-            error = 'Correo o contraseña incorrectos.'
+            error = 'Correo o contraseÃ±a incorrectos.'
 
     return render_template('login.html', error=error)
 
@@ -102,18 +102,18 @@ def logout():
 @app.route('/dashboard')
 @login_requerido
 def dashboard():
-    """Página principal para cualquier usuario autenticado."""
+    """PÃ¡gina principal para cualquier usuario autenticado."""
     return render_template('index.html', correo=session['correo'], rol=session['rol'])
 
 
 @app.route('/admin')
 @rol_admin_requerido
 def admin():
-    """Página exclusiva para administradores."""
+    """PÃ¡gina exclusiva para administradores."""
     return render_template('index.html', correo=session['correo'], rol=session['rol'])
 
 
-# ─── RUTAS DE REPORTES (API) ────────────────────────────────────────────────
+# â”€â”€â”€ RUTAS DE REPORTES (API) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @app.route('/api/reportes', methods=['GET'])
 @login_requerido
@@ -121,6 +121,13 @@ def listar_reportes():
     """Obtiene todos los reportes, opcionalmente filtrados por estado."""
     estado = request.args.get('estado', 'Todos')
     reportes = obtener_reportes(estado)
+    
+    # Si no es admin, ocultar emails
+    if session.get('rol') != 'admin':
+        for reporte in reportes:
+            if 'email' in reporte:
+                reporte['email'] = None
+    
     return jsonify(reportes)
 
 
@@ -128,33 +135,33 @@ def listar_reportes():
 @login_requerido
 def crear_nuevo_reporte():
     try:
-        # ─── CAMPOS DE TEXTO ───
+        # â”€â”€â”€ CAMPOS DE TEXTO â”€â”€â”€
         direccion  = request.form.get('direccion', '').strip()
         comentario = request.form.get('comentario', '').strip()
         email      = request.form.get('email', '').strip() or None
 
-        # ─── COORDENADAS (MAPA) ───
+        # â”€â”€â”€ COORDENADAS (MAPA) â”€â”€â”€
         lat = request.form.get('lat')
         lng = request.form.get('lng')
 
         if not lat or not lng:
-            return jsonify({'error': 'Debe marcar la ubicación en el mapa'}), 400
+            return jsonify({'error': 'Debe marcar la ubicaciÃ³n en el mapa'}), 400
 
-        # ─── VALIDACIONES ───
+        # â”€â”€â”€ VALIDACIONES â”€â”€â”€
         if not direccion or len(direccion) < 5:
-            return jsonify({'error': 'La dirección debe tener al menos 5 caracteres'}), 400
+            return jsonify({'error': 'La direcciÃ³n debe tener al menos 5 caracteres'}), 400
 
         if not comentario or len(comentario) < 10:
             return jsonify({'error': 'El comentario debe tener al menos 10 caracteres'}), 400
 
-        # ─── FOTO ───
+        # â”€â”€â”€ FOTO â”€â”€â”€
         if 'foto' not in request.files:
             return jsonify({'error': 'Falta la foto'}), 400
 
         foto = request.files['foto']
 
         if foto.filename == '':
-            return jsonify({'error': 'No se seleccionó ningún archivo'}), 400
+            return jsonify({'error': 'No se seleccionÃ³ ningÃºn archivo'}), 400
 
         if not allowed_file(foto.filename):
             return jsonify({'error': 'Tipo de archivo no permitido'}), 400
@@ -165,7 +172,7 @@ def crear_nuevo_reporte():
 
         foto.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-        # ─── BD ───
+        # â”€â”€â”€ BD â”€â”€â”€
         reporte_id = crear_reporte(
             direccion=direccion,
             comentario=comentario,
@@ -188,6 +195,9 @@ def obtener_reporte(reporte_id):
     """Obtiene un reporte específico por ID."""
     reporte = obtener_reporte_por_id(reporte_id)
     if reporte:
+        # Si no es admin, ocultar email
+        if session.get('rol') != 'admin' and 'email' in reporte:
+            reporte['email'] = None
         return jsonify(reporte)
     return jsonify({'error': 'Reporte no encontrado'}), 404
 
@@ -204,12 +214,12 @@ def cambiar_estado_reporte(reporte_id):
         # Validar estado
         estados_validos = ['Pendiente', 'Verificando', 'Solucionado', 'Rechazado']
         if nuevo_estado not in estados_validos:
-            return jsonify({'error': 'Estado no válido'}), 400
+            return jsonify({'error': 'Estado no vÃ¡lido'}), 400
         
-        # Si es rechazado, verificar que haya razón
+        # Si es rechazado, verificar que haya razÃ³n
         if nuevo_estado == 'Rechazado':
             if not razon_rechazo or len(razon_rechazo.strip()) < 10:
-                return jsonify({'error': 'Debe proporcionar una razón de rechazo de al menos 10 caracteres'}), 400
+                return jsonify({'error': 'Debe proporcionar una razÃ³n de rechazo de al menos 10 caracteres'}), 400
         
         # Actualizar estado
         actualizar_estado_reporte(reporte_id, nuevo_estado, razon_rechazo)
@@ -223,15 +233,84 @@ def cambiar_estado_reporte(reporte_id):
         return jsonify({'error': f'Error al actualizar estado: {str(e)}'}), 500
 
 
+@app.route('/api/reportes/<int:reporte_id>/categoria', methods=['PUT'])
+@rol_admin_requerido
+def cambiar_categoria_reporte(reporte_id):
+    """Cambia la categoría de un reporte (solo admin)."""
+    try:
+        data = request.get_json()
+        nueva_categoria = data.get('categoria')
+        
+        # Validar categoría
+        categorias_validas = [
+            'Vías y Tránsito',
+            'Alumbrado Público',
+            'Agua y Saneamiento',
+            'Residuos y Limpieza',
+            'Parques y Espacios Públicos',
+            'Electricidad y Telecomunicaciones',
+            'Edificaciones Públicas',
+            'Seguridad Urbana',
+            'Transporte Público',
+            'Otros'
+        ]
+        
+        if nueva_categoria not in categorias_validas:
+            return jsonify({'error': 'Categoría no válida'}), 400
+        
+        # Actualizar categoría
+        actualizar_categoria_reporte(reporte_id, nueva_categoria)
+        
+        return jsonify({
+            'success': True,
+            'message': f'Categoría actualizada a {nueva_categoria}'
+        })
+        
+    except Exception as e:
+        return jsonify({'error': f'Error al actualizar categoría: {str(e)}'}), 500
+
+
+@app.route('/api/reportes/<int:reporte_id>', methods=['DELETE'])
+@rol_admin_requerido
+def eliminar_reporte_ruta(reporte_id):
+    """Elimina un reporte (solo admin, requiere comentario)."""
+    try:
+        data = request.get_json()
+        comentario = data.get('comentario', '').strip()
+        
+        # Validar que haya comentario
+        if not comentario or len(comentario) < 10:
+            return jsonify({'error': 'Debe proporcionar un comentario de al menos 10 caracteres explicando por qué elimina este reporte'}), 400
+        
+        # Verificar que el reporte existe
+        reporte = obtener_reporte_por_id(reporte_id)
+        if not reporte:
+            return jsonify({'error': 'Reporte no encontrado'}), 404
+        
+        # Eliminar reporte
+        eliminado = eliminar_reporte(reporte_id)
+        
+        if eliminado:
+            return jsonify({
+                'success': True,
+                'message': f'Reporte eliminado. Razón: {comentario}'
+            })
+        else:
+            return jsonify({'error': 'No se pudo eliminar el reporte'}), 500
+        
+    except Exception as e:
+        return jsonify({'error': f'Error al eliminar reporte: {str(e)}'}), 500
+
+
 @app.route('/api/estadisticas', methods=['GET'])
 @rol_admin_requerido
 def obtener_estadisticas_reportes():
-    """Obtiene estadísticas de reportes (solo admin)."""
+    """Obtiene estadÃ­sticas de reportes (solo admin)."""
     stats = obtener_estadisticas()
     return jsonify(stats)
 
 
-# ─── INICIALIZACIÓN ────────────────────────────────────────────────────────
+# â”€â”€â”€ INICIALIZACIÃ“N â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 # Crear tabla al importar
 init_db()
@@ -243,8 +322,8 @@ if __name__ == '__main__':
     print("=" * 50)
     print(f" DB usada: {DB_PATH}")
     print(" Usuarios de prueba:")
-    print("   admin   → admin@ejemplo.com / admin123")
-    print("   normal  → usuario@ejemplo.com / usuario123")
+    print("   admin   â†’ admin@ejemplo.com / admin123")
+    print("   normal  â†’ usuario@ejemplo.com / usuario123")
     print("=" * 50)
 
     app.run(debug=True)

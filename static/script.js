@@ -79,8 +79,8 @@ function initMap() {
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
-    // Show first section
-    mostrarSeccion('crear');
+    // Show first section - Reportes
+    mostrarSeccion('lista');
     
     // Initialize filters
     const filtroEstado = document.getElementById('filtro-estado');
@@ -199,16 +199,34 @@ async function cargarReportes() {
     }
 }
 
+function obtenerIconoCategoria(categoria) {
+    const iconos = {
+        'Vías y Tránsito': '🚗',
+        'Alumbrado Público': '💡',
+        'Agua y Saneamiento': '💧',
+        'Residuos y Limpieza': '🗑️',
+        'Parques y Espacios Públicos': '🌳',
+        'Electricidad y Telecomunicaciones': '⚡',
+        'Edificaciones Públicas': '🏢',
+        'Seguridad Urbana': '🚨',
+        'Transporte Público': '🚌',
+        'Otros': '📌'
+    };
+    return iconos[categoria] || '📌';
+}
+
 function crearTarjetaReporte(reporte) {
     const card = document.createElement('div');
     card.className = 'reporte-card';
     card.onclick = () => verDetalleReporte(reporte.id);
     
     const estadoClass = `estado-${reporte.estado.toLowerCase()}`;
+    const categoriaIcon = obtenerIconoCategoria(reporte.categoria);
     
     card.innerHTML = `
         <img src="/static/uploads/${reporte.foto}" alt="Foto del reporte" class="reporte-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22%3E%3Crect fill=%22%23ddd%22 width=%22300%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2218%22 text-anchor=%22middle%22 fill=%22%23999%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
         <div class="reporte-contenido">
+            <div class="reporte-categoria">${categoriaIcon} ${escapeHtml(reporte.categoria)}</div>
             <div class="reporte-direccion">${escapeHtml(reporte.direccion)}</div>
             <div class="reporte-comentario">${escapeHtml(reporte.comentario)}</div>
             <div class="reporte-footer">
@@ -236,11 +254,17 @@ async function verDetalleReporte(id) {
         }
         
         const estadoClass = `estado-${reporte.estado.toLowerCase()}`;
+        const categoriaIcon = obtenerIconoCategoria(reporte.categoria);
         
         let contenido = `
             <h2>Detalle del Reporte #${reporte.id}</h2>
             
             <img src="/static/uploads/${reporte.foto}" alt="Foto del reporte" class="modal-imagen" onerror="this.style.display='none'">
+            
+            <div class="modal-info">
+                <strong>🏷️ Categoría:</strong>
+                <p>${categoriaIcon} ${escapeHtml(reporte.categoria)}</p>
+            </div>
             
             <div class="modal-info">
                 <strong>📍 Dirección:</strong>
@@ -257,7 +281,7 @@ async function verDetalleReporte(id) {
                 <p>${formatearFecha(reporte.fecha_creacion)}</p>
             </div>
             
-            ${reporte.email ? `
+            ${(reporte.email && esAdmin()) ? `
             <div class="modal-info">
                 <strong>📧 Email de contacto:</strong>
                 <p>${escapeHtml(reporte.email)}</p>
@@ -281,12 +305,34 @@ async function verDetalleReporte(id) {
         if (esAdmin()) {
             contenido += `
                 <div class="admin-acciones">
-                    <h4>Acciones de Administrador</h4>
+                    <h4>Cambiar Categoría</h4>
+                    <div class="admin-categoria">
+                        <select id="nueva-categoria" class="select-categoria">
+                            <option value="Vías y Tránsito" ${reporte.categoria === 'Vías y Tránsito' ? 'selected' : ''}>Vías y Tránsito</option>
+                            <option value="Alumbrado Público" ${reporte.categoria === 'Alumbrado Público' ? 'selected' : ''}>Alumbrado Público</option>
+                            <option value="Agua y Saneamiento" ${reporte.categoria === 'Agua y Saneamiento' ? 'selected' : ''}>Agua y Saneamiento</option>
+                            <option value="Residuos y Limpieza" ${reporte.categoria === 'Residuos y Limpieza' ? 'selected' : ''}>Residuos y Limpieza</option>
+                            <option value="Parques y Espacios Públicos" ${reporte.categoria === 'Parques y Espacios Públicos' ? 'selected' : ''}>Parques y Espacios Públicos</option>
+                            <option value="Electricidad y Telecomunicaciones" ${reporte.categoria === 'Electricidad y Telecomunicaciones' ? 'selected' : ''}>Electricidad y Telecomunicaciones</option>
+                            <option value="Edificaciones Públicas" ${reporte.categoria === 'Edificaciones Públicas' ? 'selected' : ''}>Edificaciones Públicas</option>
+                            <option value="Seguridad Urbana" ${reporte.categoria === 'Seguridad Urbana' ? 'selected' : ''}>Seguridad Urbana</option>
+                            <option value="Transporte Público" ${reporte.categoria === 'Transporte Público' ? 'selected' : ''}>Transporte Público</option>
+                            <option value="Otros" ${reporte.categoria === 'Otros' ? 'selected' : ''}>Otros</option>
+                        </select>
+                        <button class="btn btn-primary btn-small" onclick="cambiarCategoria(${reporte.id})">Actualizar Categoría</button>
+                    </div>
+                    
+                    <h4>Cambiar Estado</h4>
                     <div class="admin-botones">
                         <button class="btn btn-warning btn-small" onclick="cambiarEstado(${reporte.id}, 'Pendiente')">Pendiente</button>
                         <button class="btn btn-primary btn-small" onclick="cambiarEstado(${reporte.id}, 'Verificando')">Verificando</button>
                         <button class="btn btn-success btn-small" onclick="cambiarEstado(${reporte.id}, 'Solucionado')">Solucionado</button>
                         <button class="btn btn-danger btn-small" onclick="rechazarReporte(${reporte.id})">Rechazar</button>
+                    </div>
+                    
+                    <div class="admin-zona-peligro">
+                        <button class="btn btn-eliminar btn-extra-small" onclick="eliminarReporte(${reporte.id})">🗑️ Eliminar Reporte</button>
+                        <small class="texto-advertencia">Esta acción no se puede deshacer</small>
                     </div>
                 </div>
             `;
@@ -494,6 +540,94 @@ function escapeHtml(text) {
         "'": '&#039;'
     };
     return text.replace(/[&<>"']/g, m => map[m]);
+}
+
+async function cambiarCategoria(id) {
+    const nuevaCategoria = document.getElementById('nueva-categoria').value;
+    
+    if (!confirm(`¿Cambiar categoría a "${nuevaCategoria}"?`)) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/api/reportes/${id}/categoria`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ categoria: nuevaCategoria })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            alert('✅ ' + data.message);
+            cerrarModal();
+            cargarReportes();
+            if (document.getElementById('seccion-analiticas')?.classList.contains('active')) {
+                cargarAnaliticas();
+            }
+        } else {
+            alert('❌ ' + data.error);
+        }
+    } catch (error) {
+        alert('❌ Error al cambiar la categoría');
+    }
+}
+
+function eliminarReporte(id) {
+    // Primera confirmación
+    if (!confirm('⚠️ ¿ESTÁS SEGURO que deseas ELIMINAR este reporte?\n\nEsta acción NO se puede deshacer.')) {
+        return;
+    }
+    
+    // Solicitar comentario obligatorio
+    const comentario = prompt('Por favor, ingresa el motivo de la eliminación (mínimo 10 caracteres):\n\nEjemplo: "Reporte duplicado del ID #123" o "Contenido inapropiado"');
+    
+    if (!comentario) {
+        return; // Cancelado
+    }
+    
+    if (comentario.trim().length < 10) {
+        alert('❌ El comentario debe tener al menos 10 caracteres');
+        return eliminarReporte(id); // Volver a preguntar
+    }
+    
+    // Segunda confirmación con el comentario
+    if (!confirm(`¿Confirmas la eliminación del reporte?\n\nMotivo: "${comentario}"\n\n⚠️ Esta acción es IRREVERSIBLE`)) {
+        return;
+    }
+    
+    eliminarReporteConfirmado(id, comentario);
+}
+
+async function eliminarReporteConfirmado(id, comentario) {
+    try {
+        const response = await fetch(`/api/reportes/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 
+                comentario: comentario
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            alert('✅ ' + data.message);
+            cerrarModal();
+            cargarReportes();
+            if (document.getElementById('seccion-analiticas')?.classList.contains('active')) {
+                cargarAnaliticas();
+            }
+        } else {
+            alert('❌ ' + data.error);
+        }
+    } catch (error) {
+        alert('❌ Error al eliminar el reporte');
+    }
 }
 
 function esAdmin() {

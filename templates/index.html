@@ -12,17 +12,17 @@
 
 </head>
 <body>
-    <!-- Navegación -->
+    <!-- NavegaciÃ³n -->
     <nav class="navbar">
         <div class="container">
-            <h1 class="logo">🏗️ REPORTES CIUDADANOS</h1>
+            <h1 class="logo">ðŸ—ï¸ REPORTES CIUDADANOS</h1>
             <div class="nav-links">
-                <button class="nav-btn active" onclick="mostrarSeccion('crear')">Crear Reporte</button>
-                <button class="nav-btn" onclick="mostrarSeccion('lista')">Ver Reportes</button>
+                <button class="nav-btn active" onclick="mostrarSeccion('lista')">Reportes</button>
+                <button class="nav-btn" onclick="mostrarSeccion('crear')">Crear Reporte</button>
                 {% if rol == 'admin' %}
-                <button class="nav-btn" onclick="mostrarSeccion('analiticas')">Analíticas</button>
+                <button class="nav-btn" onclick="mostrarSeccion('analiticas')">AnalÃ­ticas</button>
                 {% endif %}
-                <a href="/logout" class="nav-btn">Cerrar sesión</a>
+                <a href="/logout" class="nav-btn">Cerrar sesiÃ³n</a>
             </div>
         </div>
     </nav>
@@ -31,13 +31,13 @@
     <div class="container main-content">
 
         <!-- Sección: Crear Reporte -->
-        <section id="seccion-crear" class="seccion active">
+        <section id="seccion-crear" class="seccion">
             <h2>Crear Nuevo Reporte</h2>
             <p class="descripcion">Reporta baches y problemas de infraestructura en tu comunidad</p>
 
             <form id="form-crear-reporte" class="form-card">
                 <div class="form-group">
-                    <label>📍 Ubicación en el mapa *</label>
+                    <label>ðŸ“ UbicaciÃ³n en el mapa *</label>
 
                     <div id="map" style="height: 300px; border-radius: 8px;"></div>
 
@@ -47,21 +47,38 @@
                     <small>Toca el mapa para marcar la ubicación exacta</small>
                 </div>
 
+                <div class="form-group">
+                    <label for="categoria">🏷️ Categoría *</label>
+                    <select id="categoria" name="categoria" required>
+                        <option value="Vías y Tránsito">Vías y Tránsito</option>
+                        <option value="Alumbrado Público">Alumbrado Público</option>
+                        <option value="Agua y Saneamiento">Agua y Saneamiento</option>
+                        <option value="Residuos y Limpieza">Residuos y Limpieza</option>
+                        <option value="Parques y Espacios Públicos">Parques y Espacios Públicos</option>
+                        <option value="Electricidad y Telecomunicaciones">Electricidad y Telecomunicaciones</option>
+                        <option value="Edificaciones Públicas">Edificaciones Públicas</option>
+                        <option value="Seguridad Urbana">Seguridad Urbana</option>
+                        <option value="Transporte Público">Transporte Público</option>
+                        <option value="Otros">Otros</option>
+                    </select>
+                    <small>Selecciona la categoría más apropiada</small>
+                </div>
+
 
                 <div class="form-group">
-                    <label for="comentario">💬 Descripción del Problema *</label>
+                    <label for="comentario">ðŸ’¬ DescripciÃ³n del Problema *</label>
                     <textarea
                         id="comentario"
                         name="comentario"
                         rows="4"
-                        placeholder="Describe el problema: tamaño, ubicación exacta, peligrosidad, etc."
+                        placeholder="Describe el problema: tamaÃ±o, ubicaciÃ³n exacta, peligrosidad, etc."
                         required
                     ></textarea>
-                    <small>Mínimo 10 caracteres</small>
+                    <small>MÃ­nimo 10 caracteres</small>
                 </div>
 
                 <div class="form-group">
-                    <label for="foto">📷 Foto del Problema *</label>
+                    <label for="foto">ðŸ“· Foto del Problema *</label>
                     <input
                         type="file"
                         id="foto"
@@ -71,11 +88,11 @@
                         required
                     >
 
-                    <small>Formatos: JPG, PNG, WEBP - Máximo 5MB</small>
+                    <small>Formatos: JPG, PNG, WEBP - MÃ¡ximo 5MB</small>
                 </div>
 
                 <div class="form-group">
-                    <label for="email">📧 Email (Opcional)</label>
+                    <label for="email">ðŸ“§ Email (Opcional)</label>
                     <input
                         type="email"
                         id="email"
@@ -91,9 +108,9 @@
             <div id="mensaje-crear" class="mensaje oculto"></div>
         </section>
 
-        <!-- Sección: Ver Reportes -->
-        <section id="seccion-lista" class="seccion">
-            <h2>Lista de Reportes</h2>
+        <!-- Sección: Reportes -->
+        <section id="seccion-lista" class="seccion active">
+            <h2>Reportes</h2>
             <p class="descripcion">Visualiza y gestiona todos los reportes de la comunidad</p>
 
             <!-- Filtros -->
@@ -114,13 +131,13 @@
             </div>
         </section>
 
-        <!-- Sección: Analíticas (solo admin) -->
+        <!-- SecciÃ³n: AnalÃ­ticas (solo admin) -->
         {% if rol == 'admin' %}
         <section id="seccion-analiticas" class="seccion">
-            <h2>Analíticas</h2>
-            <p class="descripcion">Estadísticas generales del sistema</p>
+            <h2>AnalÃ­ticas</h2>
+            <p class="descripcion">EstadÃ­sticas generales del sistema</p>
 
-            <!-- Estadísticas en tarjetas -->
+            <!-- EstadÃ­sticas en tarjetas -->
             <div class="stats-grid">
                 <div class="stat-card">
                     <h3 id="stat-total">0</h3>
@@ -144,9 +161,9 @@
                 </div>
             </div>
 
-            <!-- Gráfico de barras -->
+            <!-- GrÃ¡fico de barras -->
             <div class="analiticas-grafico">
-                <h3>Distribución por Estado</h3>
+                <h3>DistribuciÃ³n por Estado</h3>
                 <div class="grafico-barra">
                     <div class="barra-item">
                         <span class="barra-label">Pendiente</span>

@@ -31,7 +31,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-# â”€â”€â”€ DECORADORES DE PROTECCIÃ“N â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# -------- DECORADORES DE PROTECCIÃ“N â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def login_requerido(f):
     """Redirige a login si el usuario no estÃ¡ autenticado."""
@@ -172,7 +172,7 @@ def crear_nuevo_reporte():
 
         foto.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-        # â”€â”€â”€ BD â”€â”€â”€
+        # ------- BD --------
         reporte_id = crear_reporte(
             direccion=direccion,
             comentario=comentario,
@@ -183,7 +183,7 @@ def crear_nuevo_reporte():
             usuario_correo=session.get('correo')
         )
 
-        return jsonify({'success': True, 'id': reporte_id}), 201
+        return jsonify({'success': True, 'message': 'Reporte enviado correctamente', 'id': reporte_id}), 201
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -310,7 +310,7 @@ def obtener_estadisticas_reportes():
     return jsonify(stats)
 
 
-# â”€â”€â”€ INICIALIZACIÃ“N â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# -------- INICIALIZACIÃ“N â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 # Crear tabla al importar
 init_db()

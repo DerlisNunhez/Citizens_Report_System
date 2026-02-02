@@ -25,17 +25,17 @@ def migrar_columna_categoria():
         columnas = [col[1] for col in cursor.fetchall()]
         
         if 'categoria' not in columnas:
-            print("ðŸ”„ Migrando base de datos: agregando columna 'categoria'...")
+            print("„ Migrando base de datos: agregando columna 'categoria'...")
             cursor.execute('''
                 ALTER TABLE reportes 
                 ADD COLUMN categoria TEXT NOT NULL DEFAULT 'Otros'
             ''')
             conn.commit()
-            print("âœ… Columna 'categoria' agregada exitosamente")
+            print(" Columna 'categoria' agregada exitosamente")
         
         conn.close()
     except Exception as e:
-        print(f"âš ï¸ Error en migraciÃ³n: {e}")
+        print(f" Error en migracion: {e}")
 
 
 def init_db():
@@ -53,7 +53,7 @@ def init_db():
                 os.remove(DB_PATH)
                 db_existe = False
         except Exception:
-            # cualquier error al leer â†’ eliminarlo
+            # cualquier error al leer → eliminarlo
             try:
                 os.remove(DB_PATH)
                 db_existe = False
@@ -76,7 +76,7 @@ def init_db():
     conn.execute('''
         CREATE TABLE IF NOT EXISTS reportes (
             id              INTEGER PRIMARY KEY AUTOINCREMENT,
-            direccion       TEXT    NOT NULL,
+            ubicacion       TEXT    NOT NULL,
             comentario      TEXT    NOT NULL,
             foto            TEXT    NOT NULL,
             email           TEXT,
@@ -104,7 +104,7 @@ def init_db():
 def crear_usuario(correo, contrasena, rol='usuario'):
     """
     Inserta un nuevo usuario.
-    La contraseÃ±a se hashea automÃ¡ticamente.
+    La contraseña se hashea automÃ¡ticamente.
     Retorna True si se crea, False si el correo ya existe.
     """
     conn = get_db()
@@ -139,7 +139,7 @@ def verificar_contrasena(contrasena, hash_almacenado):
 
 #---------------FUNCIONES DE REPORTES---------------------------------------------------------------------------------------------------------
 
-def crear_reporte(direccion, comentario, foto, lat, lng, categoria='Otros', email=None, usuario_correo=None):
+def crear_reporte(ubicacion, comentario, foto, lat=None, lng=None, categoria='Otros', email=None, usuario_correo=None):
     """
     Crea un nuevo reporte.
     Retorna el ID del reporte creado.
@@ -149,9 +149,9 @@ def crear_reporte(direccion, comentario, foto, lat, lng, categoria='Otros', emai
     
     cursor = conn.execute(
         '''INSERT INTO reportes 
-           (direccion, comentario, foto, categoria, email, lat, lng, estado, fecha_creacion, usuario_correo)
+           (ubicacion, comentario, foto, categoria, email, lat, lng, estado, fecha_creacion, usuario_correo)
            VALUES (?, ?, ?, ?, ?, ?, ?, 'Pendiente', ?, ?)''',
-        (direccion, comentario, foto, categoria, email, lat, lng, fecha, usuario_correo)
+        (ubicacion, comentario, foto, categoria, email, lat, lng, fecha, usuario_correo)
     )
     conn.commit()
     reporte_id = cursor.lastrowid
@@ -183,7 +183,7 @@ def obtener_reportes(estado=None):
 
 
 def obtener_reporte_por_id(reporte_id):
-    """Obtiene un reporte especÃ­fico por su ID."""
+    """Obtiene un reporte específico por su ID."""
     conn = get_db()
     reporte = conn.execute(
         'SELECT * FROM reportes WHERE id = ?',
@@ -217,7 +217,7 @@ def actualizar_estado_reporte(reporte_id, nuevo_estado, razon_rechazo=None):
 
 def actualizar_categoria_reporte(reporte_id, nueva_categoria):
     """
-    Actualiza la categorÃ­a de un reporte (solo admin).
+    Actualiza la categoria de un reporte (solo admin).
     """
     conn = get_db()
     conn.execute(

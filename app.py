@@ -14,7 +14,7 @@ app = Flask(__name__)
 app.secret_key = 'cambiar_esto_en_produccion_por_una_clave_segura'
 app.config['PROPAGATE_EXCEPTIONS'] = True
 
-# ConfiguraciÃ³n de uploads
+# Configuracion de uploads
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp'}
 MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
@@ -31,7 +31,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-# -------- DECORADORES DE PROTECCIÃ“N â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ─── DECORADORES DE PROTECCIÓN ────────────────────────────────────────────
 
 def login_requerido(f):
     """Redirige a login si el usuario no estÃ¡ autenticado."""
@@ -55,7 +55,7 @@ def rol_admin_requerido(f):
     return decorado
 
 
-# â”€â”€â”€ RUTAS DE AUTENTICACIÃ“N â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ─── RUTAS DE AUTENTICACIÓN ────────────────────────────────────────────────
 
 @app.route('/')
 def home():
@@ -77,12 +77,12 @@ def login():
         usuario = buscar_usuario_por_correo(correo)
 
         if usuario and verificar_contrasena(contrasena, usuario['contrasena']):
-            # â”€â”€â”€ LOGIN EXITOSO â”€â”€â”€
+            # ─── LOGIN EXITOSO ───
             session['correo'] = usuario['correo']
             session['rol']    = usuario['rol']
             session.permanent = True
 
-            # redirigir segÃºn rol
+            # redirigir según rol
             if usuario['rol'] == 'admin':
                 return redirect(url_for('admin'))
             return redirect(url_for('dashboard'))
@@ -102,18 +102,18 @@ def logout():
 @app.route('/dashboard')
 @login_requerido
 def dashboard():
-    """PÃ¡gina principal para cualquier usuario autenticado."""
+    """Pagina principal para cualquier usuario autenticado."""
     return render_template('index.html', correo=session['correo'], rol=session['rol'])
 
 
 @app.route('/admin')
 @rol_admin_requerido
 def admin():
-    """PÃ¡gina exclusiva para administradores."""
+    """Pagina exclusiva para administradores."""
     return render_template('index.html', correo=session['correo'], rol=session['rol'])
 
 
-# â”€â”€â”€ RUTAS DE REPORTES (API) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ─── RUTAS DE REPORTES (API) ────────────────────────────────────────────────
 
 @app.route('/api/reportes', methods=['GET'])
 @login_requerido
@@ -135,26 +135,26 @@ def listar_reportes():
 @login_requerido
 def crear_nuevo_reporte():
     try:
-        # â”€â”€â”€ CAMPOS DE TEXTO â”€â”€â”€
-        direccion  = request.form.get('direccion', '').strip()
+        # ─── CAMPOS DE TEXTO ───
+        ubicacion  = request.form.get('ubicacion', '').strip()
         comentario = request.form.get('comentario', '').strip()
         email      = request.form.get('email', '').strip() or None
 
-        # â”€â”€â”€ COORDENADAS (MAPA) â”€â”€â”€
+        # ─── COORDENADAS (MAPA) ───
         lat = request.form.get('lat')
         lng = request.form.get('lng')
 
         if not lat or not lng:
             return jsonify({'error': 'Debe marcar la ubicaciÃ³n en el mapa'}), 400
 
-        # â”€â”€â”€ VALIDACIONES â”€â”€â”€
-        if not direccion or len(direccion) < 5:
-            return jsonify({'error': 'La direcciÃ³n debe tener al menos 5 caracteres'}), 400
+        # ─── VALIDACIONES ───
+        if not ubicacion or len(ubicacion) < 5:
+            return jsonify({'error': 'La dirección debe tener al menos 5 caracteres'}), 400
 
         if not comentario or len(comentario) < 10:
             return jsonify({'error': 'El comentario debe tener al menos 10 caracteres'}), 400
 
-        # â”€â”€â”€ FOTO â”€â”€â”€
+        # ─── FOTO ───
         if 'foto' not in request.files:
             return jsonify({'error': 'Falta la foto'}), 400
 
@@ -174,7 +174,7 @@ def crear_nuevo_reporte():
 
         # ------- BD --------
         reporte_id = crear_reporte(
-            direccion=direccion,
+            ubicacion=ubicacion,
             comentario=comentario,
             foto=filename,
             email=email,
@@ -216,7 +216,7 @@ def cambiar_estado_reporte(reporte_id):
         if nuevo_estado not in estados_validos:
             return jsonify({'error': 'Estado no vÃ¡lido'}), 400
         
-        # Si es rechazado, verificar que haya razÃ³n
+        # Si es rechazado, verificar que haya razón
         if nuevo_estado == 'Rechazado':
             if not razon_rechazo or len(razon_rechazo.strip()) < 10:
                 return jsonify({'error': 'Debe proporcionar una razÃ³n de rechazo de al menos 10 caracteres'}), 400
@@ -310,7 +310,7 @@ def obtener_estadisticas_reportes():
     return jsonify(stats)
 
 
-# -------- INICIALIZACIÃ“N â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ─── INICIALIZACIÓN ────────────────────────────────────────────────────────
 
 # Crear tabla al importar
 init_db()

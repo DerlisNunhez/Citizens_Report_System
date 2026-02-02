@@ -56,6 +56,18 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="ubicacion">Dirección *</label>
+                    <input
+                        type="text"
+                        id="ubicacion"
+                        name="ubicacion"
+                        placeholder="Alguna referencia..."
+                        required
+                    >
+                    <small>Mínimo 5 caracteres</small>
+                </div>
+
+                <div class="form-group">
                     <label for="categoria">Categoría *</label>
                     <select id="categoria" name="categoria" required>
                         <option value="Vías y Tránsito">Vías y Tránsito</option>
@@ -70,17 +82,6 @@
                         <option value="Otros">Otros</option>
                     </select>
                     <small>Selecciona la categoría más apropiada</small>
-                </div>
-                <div class="form-group">
-                    <label for="direccion">Dirección *</label>
-                    <input
-                        type="text"
-                        id="direccion"
-                        name="direccion"
-                        placeholder="Ej: Av. San Martín y Lillo"
-                        required
-                    >
-                    <small>Mínimo 5 caracteres</small>
                 </div>
 
                 <div class="form-group">
@@ -149,13 +150,13 @@
             </div>
         </section>
 
-        <!-- SecciÃ³n: AnalÃ­ticas (solo admin) -->
+        <!-- Sección: Analíticas (solo admin) -->
         {% if rol == 'admin' %}
         <section id="seccion-analiticas" class="seccion">
             <h2>Anali­ticas</h2>
             <p class="descripcion">Estadi­sticas generales del sistema</p>
 
-            <!-- EstadÃ­sticas en tarjetas -->
+            <!-- Estadi­sticas en tarjetas -->
             <div class="stats-grid">
                 <div class="stat-card">
                     <h3 id="stat-total">0</h3>
@@ -179,7 +180,7 @@
                 </div>
             </div>
 
-            <!-- GrÃ¡fico de barras -->
+            <!-- Grafico de barras -->
             <div class="analiticas-grafico">
                 <h3>Distribucion por Estado</h3>
                 <div class="grafico-barra">

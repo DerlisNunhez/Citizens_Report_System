@@ -127,58 +127,59 @@ def listar_reportes():
 @app.route('/api/reportes', methods=['POST'])
 @login_requerido
 def crear_nuevo_reporte():
-    """Crea un nuevo reporte con la foto subida."""
     try:
-        # Validar campos requeridos
-        direccion = request.form.get('direccion', '').strip()
+        # ─── CAMPOS DE TEXTO ───
+        direccion  = request.form.get('direccion', '').strip()
         comentario = request.form.get('comentario', '').strip()
-        email = request.form.get('email', '').strip() or None
-        
+        email      = request.form.get('email', '').strip() or None
+
+        # ─── COORDENADAS (MAPA) ───
+        lat = request.form.get('lat')
+        lng = request.form.get('lng')
+
+        if not lat or not lng:
+            return jsonify({'error': 'Debe marcar la ubicación en el mapa'}), 400
+
+        # ─── VALIDACIONES ───
         if not direccion or len(direccion) < 5:
             return jsonify({'error': 'La dirección debe tener al menos 5 caracteres'}), 400
-        
+
         if not comentario or len(comentario) < 10:
             return jsonify({'error': 'El comentario debe tener al menos 10 caracteres'}), 400
-        
-        # Validar y guardar foto
+
+        # ─── FOTO ───
         if 'foto' not in request.files:
             return jsonify({'error': 'Falta la foto'}), 400
-        
+
         foto = request.files['foto']
-        
+
         if foto.filename == '':
             return jsonify({'error': 'No se seleccionó ningún archivo'}), 400
-        
+
         if not allowed_file(foto.filename):
-            return jsonify({'error': 'Tipo de archivo no permitido. Use JPG, PNG o WEBP'}), 400
-        
-        # Guardar archivo con nombre seguro
+            return jsonify({'error': 'Tipo de archivo no permitido'}), 400
+
         filename = secure_filename(foto.filename)
-        # Agregar timestamp para evitar colisiones
         from datetime import datetime
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        filename = f"{timestamp}_{filename}"
-        
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        foto.save(filepath)
-        
-        # Crear reporte en la BD
+        filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{filename}"
+
+        foto.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+        # ─── BD ───
         reporte_id = crear_reporte(
             direccion=direccion,
             comentario=comentario,
             foto=filename,
             email=email,
+            lat=float(lat),
+            lng=float(lng),
             usuario_correo=session.get('correo')
         )
-        
-        return jsonify({
-            'success': True,
-            'message': 'Reporte creado exitosamente',
-            'id': reporte_id
-        }), 201
-        
+
+        return jsonify({'success': True, 'id': reporte_id}), 201
+
     except Exception as e:
-        return jsonify({'error': f'Error al crear el reporte: {str(e)}'}), 500
+        return jsonify({'error': str(e)}), 500
 
 
 @app.route('/api/reportes/<int:reporte_id>', methods=['GET'])

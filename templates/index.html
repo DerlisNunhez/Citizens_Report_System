@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reportes de Infraestructura - Ciudad del Este</title>
     <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin="">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 </head>
 <body>
     <!-- Navegación -->
@@ -32,16 +37,16 @@
 
             <form id="form-crear-reporte" class="form-card">
                 <div class="form-group">
-                    <label for="direccion">📍 Dirección *</label>
-                    <input
-                        type="text"
-                        id="direccion"
-                        name="direccion"
-                        placeholder="Ej: Av. San Blas esquina Monseñor Rodríguez"
-                        required
-                    >
-                    <small>Mínimo 5 caracteres</small>
+                    <label>📍 Ubicación en el mapa *</label>
+
+                    <div id="map" style="height: 300px; border-radius: 8px;"></div>
+
+                    <input type="hidden" id="lat" name="lat" required>
+                    <input type="hidden" id="lng" name="lng" required>
+
+                    <small>Toca el mapa para marcar la ubicación exacta</small>
                 </div>
+
 
                 <div class="form-group">
                     <label for="comentario">💬 Descripción del Problema *</label>
@@ -61,9 +66,11 @@
                         type="file"
                         id="foto"
                         name="foto"
-                        accept="image/jpeg,image/png,image/jpg,image/webp"
+                        accept="image/*"
+                        capture="environment"
                         required
                     >
+
                     <small>Formatos: JPG, PNG, WEBP - Máximo 5MB</small>
                 </div>
 

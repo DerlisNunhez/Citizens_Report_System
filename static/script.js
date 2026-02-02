@@ -1,32 +1,93 @@
 // ═══════════════════════════════════════════════════════════════════════════
 // NAVEGACIÓN ENTRE SECCIONES
 // ═══════════════════════════════════════════════════════════════════════════
+let map;
+let marker;
 
-function mostrarSeccion(id) {
-    // Ocultar todas las secciones
-    document.querySelectorAll('.seccion').forEach(s => s.classList.remove('active'));
-    // Desactivar todos los botones de nav
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-
-    // Mostrar la sección pedida
-    const seccion = document.getElementById('seccion-' + id);
-    if (seccion) seccion.classList.add('active');
-
-    // Marcar el botón correspondiente como activo
-    const botones = document.querySelectorAll('.nav-btn');
-    botones.forEach(b => {
-        if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(id)) {
-            b.classList.add('active');
-        }
+function mostrarSeccion(nombre) {
+    // Hide all sections
+    document.querySelectorAll('.seccion').forEach(s => {
+        s.classList.remove('active');
     });
-
-    // Cargar contenido según la sección
-    if (id === 'lista') {
+    
+    // Show the requested section
+    const seccion = document.getElementById(`seccion-${nombre}`);
+    if (seccion) {
+        seccion.classList.add('active');
+    }
+    
+    // If showing the map section, initialize/update the map
+    if (nombre === 'crear') {
+        // Small delay to ensure DOM is updated
+        setTimeout(() => {
+            initMap();
+            if (map) {
+                setTimeout(() => {
+                    map.invalidateSize(true);
+                }, 50);
+            }
+        }, 50);
+    }
+    
+    // Load reports if showing list section
+    if (nombre === 'lista') {
         cargarReportes();
-    } else if (id === 'analiticas') {
+    }
+    
+    // Load analytics if showing analytics section
+    if (nombre === 'analiticas') {
         cargarAnaliticas();
     }
 }
+
+function initMap() {
+    // Don't initialize if map already exists
+    if (map) return;
+    
+    // Ensure map container exists and is visible
+    const mapContainer = document.getElementById('map');
+    if (!mapContainer || mapContainer.offsetParent === null) {
+        return;
+    }
+    
+    map = L.map('map').setView([-25.5095, -54.6110], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors',
+        maxZoom: 19,
+        minZoom: 2
+    }).addTo(map);
+
+    map.on('click', function (e) {
+        const { lat, lng } = e.latlng;
+
+        if (marker) {
+            marker.setLatLng(e.latlng);
+        } else {
+            marker = L.marker(e.latlng).addTo(map);
+        }
+
+        document.getElementById('lat').value = lat;
+        document.getElementById('lng').value = lng;
+    });
+    
+    // Force redraw after initialization
+    setTimeout(() => {
+        map.invalidateSize(true);
+    }, 100);
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Show first section
+    mostrarSeccion('crear');
+    
+    // Initialize filters
+    const filtroEstado = document.getElementById('filtro-estado');
+    if (filtroEstado) {
+        filtroEstado.addEventListener('change', cargarReportes);
+    }
+});
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CREAR REPORTE

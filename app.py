@@ -11,7 +11,7 @@ from database import (
 app = Flask(__name__)
 
 # Clave secreta para firmar las cookies de sesión
-app.secret_key = 'cambiar_esto_en_produccion_por_una_clave_segura'
+app.secret_key = os.environ.get('SECRET_KEY', 'cambiar_esto_en_produccion_por_una_clave_segura')
 app.config['PROPAGATE_EXCEPTIONS'] = True
 
 # Configuración de uploads

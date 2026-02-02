@@ -5,6 +5,9 @@ Flask==3.0.0
 # (incluye funciones de hashing de contraseñas y manejo seguro de uploads)
 Werkzeug==3.0.1
 
+# Servidor WSGI para producción
+gunicorn==21.2.0
+
 # ==========================================
 # INSTALACIÓN:
 # pip install -r requirements.txt

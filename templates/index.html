@@ -12,7 +12,7 @@
 
 </head>
 <body>
-    <!-- NavegaciÃ³n -->
+    <!-- Navegacion -->
     <nav class="navbar">
         <div class="container">
             <h1 class="logo">REPORTES CIUDADANOS</h1>
@@ -48,7 +48,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="categoria">🏷️ Categoría *</label>
+                    <label for="categoria">Categoría *</label>
                     <select id="categoria" name="categoria" required>
                         <option value="Vías y Tránsito">Vías y Tránsito</option>
                         <option value="Alumbrado Público">Alumbrado Público</option>
@@ -63,7 +63,17 @@
                     </select>
                     <small>Selecciona la categoría más apropiada</small>
                 </div>
-
+                <div class="form-group">
+                    <label for="direccion">Dirección *</label>
+                    <input
+                        type="text"
+                        id="direccion"
+                        name="direccion"
+                        placeholder="Ej: Av. San Martín y Lillo"
+                        required
+                    >
+                    <small>Mínimo 5 caracteres</small>
+                </div>
 
                 <div class="form-group">
                     <label for="comentario">Descripcion del Problema *</label>
@@ -71,7 +81,7 @@
                         id="comentario"
                         name="comentario"
                         rows="4"
-                        placeholder="Describe el problema: tamaÃ±o, ubicaciÃ³n exacta, peligrosidad, etc."
+                        placeholder="Describe el problema: tamaño, ubicación exacta, peligrosidad, etc."
                         required
                     ></textarea>
                     <small>Mi­nimo 10 caracteres</small>

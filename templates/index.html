@@ -18,11 +18,19 @@
             <h1 class="logo">REPORTES CIUDADANOS</h1>
             <div class="nav-links">
                 <button class="nav-btn active" onclick="mostrarSeccion('lista')">Reportes</button>
+                {% if correo %}
                 <button class="nav-btn" onclick="mostrarSeccion('crear')">Crear Reporte</button>
+                {% endif %}
                 {% if rol == 'admin' %}
                 <button class="nav-btn" onclick="mostrarSeccion('analiticas')">Analiticas</button>
                 {% endif %}
-                <a href="/logout" class="nav-btn">Cerrar sesion</a>
+                {% if correo %}
+                    <!-- Usuario logueado -->
+                    <a href="/logout" class="nav-btn">Cerrar sesión</a>
+                {% else %}
+                    <!-- Usuario NO logueado -->
+                    <a href="/login" class="nav-btn">Login</a>
+                {% endif %}
             </div>
         </div>
     </nav>
@@ -119,7 +127,7 @@
         </section>
 
         <!-- Sección: Reportes -->
-        <section id="seccion-lista" class="seccion active">
+        <section id="seccion-lista" class="seccion">
             <h2>Reportes</h2>
             <p class="descripcion">Visualiza y gestiona todos los reportes de la comunidad</p>
 

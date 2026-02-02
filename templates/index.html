@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reportes de Infraestructura - Ciudad del Este</title>
+    <title>Reportes de Infraestructura</title>
     <link rel="stylesheet" href="/static/styles.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
@@ -15,14 +15,14 @@
     <!-- NavegaciÃ³n -->
     <nav class="navbar">
         <div class="container">
-            <h1 class="logo">ðŸ—ï¸ REPORTES CIUDADANOS</h1>
+            <h1 class="logo">REPORTES CIUDADANOS</h1>
             <div class="nav-links">
                 <button class="nav-btn active" onclick="mostrarSeccion('lista')">Reportes</button>
                 <button class="nav-btn" onclick="mostrarSeccion('crear')">Crear Reporte</button>
                 {% if rol == 'admin' %}
-                <button class="nav-btn" onclick="mostrarSeccion('analiticas')">AnalÃ­ticas</button>
+                <button class="nav-btn" onclick="mostrarSeccion('analiticas')">Analiticas</button>
                 {% endif %}
-                <a href="/logout" class="nav-btn">Cerrar sesiÃ³n</a>
+                <a href="/logout" class="nav-btn">Cerrar sesion</a>
             </div>
         </div>
     </nav>
@@ -37,7 +37,7 @@
 
             <form id="form-crear-reporte" class="form-card">
                 <div class="form-group">
-                    <label>ðŸ“ UbicaciÃ³n en el mapa *</label>
+                    <label>Ubicacion en el mapa *</label>
 
                     <div id="map" style="height: 300px; border-radius: 8px;"></div>
 
@@ -66,7 +66,7 @@
 
 
                 <div class="form-group">
-                    <label for="comentario">ðŸ’¬ DescripciÃ³n del Problema *</label>
+                    <label for="comentario">Descripcion del Problema *</label>
                     <textarea
                         id="comentario"
                         name="comentario"
@@ -74,11 +74,11 @@
                         placeholder="Describe el problema: tamaÃ±o, ubicaciÃ³n exacta, peligrosidad, etc."
                         required
                     ></textarea>
-                    <small>MÃ­nimo 10 caracteres</small>
+                    <small>Mi­nimo 10 caracteres</small>
                 </div>
 
                 <div class="form-group">
-                    <label for="foto">ðŸ“· Foto del Problema *</label>
+                    <label for="foto">Foto del Problema *</label>
                     <input
                         type="file"
                         id="foto"
@@ -88,11 +88,11 @@
                         required
                     >
 
-                    <small>Formatos: JPG, PNG, WEBP - MÃ¡ximo 5MB</small>
+                    <small>Formatos: JPG, PNG, WEBP - Maximo 5MB</small>
                 </div>
 
                 <div class="form-group">
-                    <label for="email">ðŸ“§ Email (Opcional)</label>
+                    <label for="email">Email (Opcional)</label>
                     <input
                         type="email"
                         id="email"
@@ -134,8 +134,8 @@
         <!-- SecciÃ³n: AnalÃ­ticas (solo admin) -->
         {% if rol == 'admin' %}
         <section id="seccion-analiticas" class="seccion">
-            <h2>AnalÃ­ticas</h2>
-            <p class="descripcion">EstadÃ­sticas generales del sistema</p>
+            <h2>Anali­ticas</h2>
+            <p class="descripcion">Estadi­sticas generales del sistema</p>
 
             <!-- EstadÃ­sticas en tarjetas -->
             <div class="stats-grid">
@@ -163,7 +163,7 @@
 
             <!-- GrÃ¡fico de barras -->
             <div class="analiticas-grafico">
-                <h3>DistribuciÃ³n por Estado</h3>
+                <h3>Distribucion por Estado</h3>
                 <div class="grafico-barra">
                     <div class="barra-item">
                         <span class="barra-label">Pendiente</span>

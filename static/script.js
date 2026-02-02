@@ -49,6 +49,7 @@ function initMap() {
     if (!mapContainer || mapContainer.offsetParent === null) {
         return;
     }
+    // ciudad del este
     
     map = L.map('map').setView([-25.5095, -54.6110], 13);
 
@@ -78,16 +79,7 @@ function initMap() {
 }
 
 // Initialize on page load
-document.addEventListener('DOMContentLoaded', function() {
-    // Show first section
-    mostrarSeccion('crear');
-    
-    // Initialize filters
-    const filtroEstado = document.getElementById('filtro-estado');
-    if (filtroEstado) {
-        filtroEstado.addEventListener('change', cargarReportes);
-    }
-});
+
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CREAR REPORTE
@@ -103,12 +95,13 @@ document.addEventListener('DOMContentLoaded', function() {
             const btnSubmit = this.querySelector('button[type="submit"]');
             
             // Validaciones del lado del cliente
-            const direccion = document.getElementById('direccion').value.trim();
+            const lat = document.getElementById('lat')?.value;
+            const lng = document.getElementById('lng')?.value;
             const comentario = document.getElementById('comentario').value.trim();
             const foto = document.getElementById('foto').files[0];
             
-            if (direccion.length < 5) {
-                mostrarMensaje(mensajeDiv, 'La dirección debe tener al menos 5 caracteres', 'error');
+            if (!lat || !lng) {
+                mostrarMensaje(mensajeDiv, 'Debes seleccionar una ubicación en el mapa', 'error');
                 return;
             }
             
@@ -133,9 +126,15 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Deshabilitar botón mientras se envía
             btnSubmit.disabled = true;
-            btnSubmit.textContent = 'Enviando...';
+            btnSubmit.textContent = 'Obteniendo dirección...';
             
             try {
+                // Obtener dirección desde coordenadas (reverse geocoding)
+                const direccion = await obtenerDireccionDesdeCoords(lat, lng);
+                formData.append('direccion', direccion);
+                
+                btnSubmit.textContent = 'Enviando...';
+                
                 const response = await fetch('/api/reportes', {
                     method: 'POST',
                     body: formData
@@ -144,13 +143,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 const data = await response.json();
                 
                 if (response.ok) {
-                    mostrarMensaje(mensajeDiv, '✅ ' + data.message, 'exito');
+                    mostrarMensaje(mensajeDiv, `✅ Reporte creado exitosamente!\n\n📍 Ubicación: ${direccion}`, 'exito');
                     // Limpiar formulario
                     this.reset();
-                    // Después de 2 segundos, ir a ver reportes
+                    // Resetear marcador del mapa
+                    if (marker) {
+                        map.removeLayer(marker);
+                        marker = null;
+                    }
+                    document.getElementById('lat').value = '';
+                    document.getElementById('lng').value = '';
+                    // Después de 3 segundos, ir a ver reportes
                     setTimeout(() => {
                         mostrarSeccion('lista');
-                    }, 2000);
+                    }, 3000);
                 } else {
                     mostrarMensaje(mensajeDiv, '❌ ' + data.error, 'error');
                 }
@@ -500,3 +506,35 @@ function esAdmin() {
     // Verificar si el elemento de analíticas existe (solo visible para admin)
     return document.getElementById('seccion-analiticas') !== null;
 }
+
+// Función para obtener dirección desde coordenadas
+async function obtenerDireccionDesdeCoords(lat, lng) {
+    try {
+        const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=es`
+        );
+        const data = await response.json();
+        
+        if (data && data.display_name) {
+            return data.display_name;
+        } else {
+            // Si falla, usar coordenadas como dirección
+            return `Lat: ${parseFloat(lat).toFixed(6)}, Lng: ${parseFloat(lng).toFixed(6)}`;
+        }
+    } catch (error) {
+        console.error('Error obteniendo dirección:', error);
+        // Si falla, usar coordenadas como dirección
+        return `Lat: ${parseFloat(lat).toFixed(6)}, Lng: ${parseFloat(lng).toFixed(6)}`;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Show first section
+    mostrarSeccion('crear');
+    
+    // Initialize filters
+    const filtroEstado = document.getElementById('filtro-estado');
+    if (filtroEstado) {
+        filtroEstado.addEventListener('change', cargarReportes);
+    }
+});

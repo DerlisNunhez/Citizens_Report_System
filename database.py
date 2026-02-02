@@ -52,6 +52,8 @@ def init_db():
             comentario      TEXT    NOT NULL,
             foto            TEXT    NOT NULL,
             email           TEXT,
+            lat             REAL    NOT NULL,
+            lng             REAL    NOT NULL,
             estado          TEXT    NOT NULL DEFAULT 'Pendiente',
             razon_rechazo   TEXT,
             fecha_creacion  TEXT    NOT NULL,
@@ -104,7 +106,7 @@ def verificar_contrasena(contrasena, hash_almacenado):
 
 # ─── FUNCIONES DE REPORTES ────────────────────────────────────────────
 
-def crear_reporte(direccion, comentario, foto, email=None, usuario_correo=None):
+def crear_reporte(direccion, comentario, foto, email=None, lat=None, lng=None, usuario_correo=None):
     """
     Crea un nuevo reporte.
     Retorna el ID del reporte creado.
@@ -114,9 +116,9 @@ def crear_reporte(direccion, comentario, foto, email=None, usuario_correo=None):
     
     cursor = conn.execute(
         '''INSERT INTO reportes 
-           (direccion, comentario, foto, email, estado, fecha_creacion, usuario_correo)
-           VALUES (?, ?, ?, ?, 'Pendiente', ?, ?)''',
-        (direccion, comentario, foto, email, fecha, usuario_correo)
+           (direccion, comentario, foto, email, lat, lng, estado, fecha_creacion, usuario_correo)
+           VALUES (?, ?, ?, ?, ?, ?, 'Pendiente', ?, ?)''',
+        (direccion, comentario, foto, email, lat, lng, fecha, usuario_correo)
     )
     conn.commit()
     reporte_id = cursor.lastrowid

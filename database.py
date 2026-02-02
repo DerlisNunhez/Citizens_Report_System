@@ -83,6 +83,8 @@ def init_db():
             categoria       TEXT    NOT NULL DEFAULT 'Otros',
             estado          TEXT    NOT NULL DEFAULT 'Pendiente',
             razon_rechazo   TEXT,
+            lat             REAL    NOT NULL,
+            lng             REAL    NOT NULL,
             fecha_creacion  TEXT    NOT NULL,
             usuario_correo  TEXT,
             FOREIGN KEY (usuario_correo) REFERENCES usuarios(correo)
@@ -92,18 +94,18 @@ def init_db():
     conn.commit()
     conn.close()
     
-    # Si la base de datos ya existÃ­a, ejecutar migraciones automÃ¡ticas
+    # Si la base de datos ya existi­a, ejecutar migraciones automÃ¡ticas
     if db_existe:
         migrar_columna_categoria()
 
 
-# â”€â”€â”€ FUNCIONES DE USUARIOS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# -------------FUNCIONES DE USUARIOS---------------------------------------------------------------------------------------------------------------
 
 def crear_usuario(correo, contrasena, rol='usuario'):
     """
     Inserta un nuevo usuario.
     La contraseÃ±a se hashea automÃ¡ticamente.
-    Retorna True si se creÃ³, False si el correo ya existe.
+    Retorna True si se crea, False si el correo ya existe.
     """
     conn = get_db()
     try:
@@ -135,9 +137,9 @@ def verificar_contrasena(contrasena, hash_almacenado):
     return check_password_hash(hash_almacenado, contrasena)
 
 
-# â”€â”€â”€ FUNCIONES DE REPORTES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+#---------------FUNCIONES DE REPORTES---------------------------------------------------------------------------------------------------------
 
-def crear_reporte(direccion, comentario, foto, categoria='Otros', email=None, usuario_correo=None):
+def crear_reporte(direccion, comentario, foto, lat, lng, categoria='Otros', email=None, usuario_correo=None):
     """
     Crea un nuevo reporte.
     Retorna el ID del reporte creado.
@@ -147,9 +149,9 @@ def crear_reporte(direccion, comentario, foto, categoria='Otros', email=None, us
     
     cursor = conn.execute(
         '''INSERT INTO reportes 
-           (direccion, comentario, foto, categoria, email, estado, fecha_creacion, usuario_correo)
-           VALUES (?, ?, ?, ?, ?, 'Pendiente', ?, ?)''',
-        (direccion, comentario, foto, categoria, email, fecha, usuario_correo)
+           (direccion, comentario, foto, categoria, email, lat, lng, estado, fecha_creacion, usuario_correo)
+           VALUES (?, ?, ?, ?, ?, ?, ?, 'Pendiente', ?, ?)''',
+        (direccion, comentario, foto, categoria, email, lat, lng, fecha, usuario_correo)
     )
     conn.commit()
     reporte_id = cursor.lastrowid

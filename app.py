@@ -59,10 +59,7 @@ def rol_admin_requerido(f):
 
 @app.route('/')
 def home():
-    """RaÃ­z: si ya logueado va al dashboard, sino al login."""
-    if 'correo' in session:
-        return redirect(url_for('dashboard'))
-    return redirect(url_for('login'))
+    return redirect(url_for('index_publico'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -96,8 +93,15 @@ def login():
 @login_requerido
 def logout():
     session.clear()
-    return redirect(url_for('login'))
+    return redirect(url_for('index_publico'))
 
+@app.route('/index')
+def index_publico():
+    return render_template(
+        'index.html',
+        correo=session.get('correo'),
+        rol=session.get('rol')
+    )
 
 @app.route('/dashboard')
 @login_requerido
@@ -116,7 +120,6 @@ def admin():
 # ─── RUTAS DE REPORTES (API) ────────────────────────────────────────────────
 
 @app.route('/api/reportes', methods=['GET'])
-@login_requerido
 def listar_reportes():
     """Obtiene todos los reportes, opcionalmente filtrados por estado."""
     estado = request.args.get('estado', 'Todos')

@@ -10,6 +10,9 @@ body {
     background-color: #EDE4C2;
     color: #333;
     line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .container {
@@ -552,6 +555,179 @@ body {
     display: none !important;
 }
 
+/* LOGIN */
+.login-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 20px;
+}
+
+.login-shell {
+    width: 100%;
+    max-width: 440px;
+    animation: fadeUp .5s ease both;
+}
+
+@keyframes fadeUp {
+    from { opacity:0; transform:translateY(24px); }
+    to   { opacity:1; transform:translateY(0); }
+}
+
+.card-header {
+    text-align: center;
+    margin-bottom: 1.8rem;
+}
+
+.card-header .icon-wrap {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #004085;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.card-header .icon-wrap svg {
+    width: 30px;
+    height: 30px;
+}
+
+.card-header h2 {
+    font-size: 1.5rem;
+    color: #004085;
+    margin-bottom: .2rem;
+}
+
+.card-header p {
+    color: #666;
+    font-size: .9rem;
+}
+
+.input-wrap {
+    position: relative;
+}
+
+.input-wrap svg {
+    position: absolute;
+    left: .75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    color: #aaa;
+    pointer-events: none;
+    transition: color .2s;
+}
+
+.input-wrap:focus-within svg {
+    color: #004085;
+}
+
+.input-wrap input {
+    padding: .75rem .75rem .75rem 2.6rem;
+}
+
+.toggle-pass {
+    position: absolute;
+    right: .75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #aaa;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color .2s;
+}
+
+.toggle-pass:hover {
+    color: #004085;
+}
+
+.row-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.6rem;
+    font-size: .875rem;
+}
+
+.row-options label {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    color: #555;
+    cursor: pointer;
+    font-weight: 400;
+}
+
+.row-options input[type="checkbox"] {
+    accent-color: #004085;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.row-options a {
+    color: #004085;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.row-options a:hover {
+    text-decoration: underline;
+}
+
+.btn-full {
+    width: 100%;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    margin: 1.4rem 0;
+    color: #bbb;
+    font-size: .8rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #e0e0e0;
+}
+
+.divider span {
+    padding: 0 .75rem;
+}
+
+.register-link {
+    text-align: center;
+    font-size: .9rem;
+    color: #666;
+}
+
+.register-link a {
+    color: #004085;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.register-link a:hover {
+    text-decoration: underline;
+}
+
 /* RESPONSIVE */
 @media (max-width: 768px) {
     .navbar {
@@ -627,5 +803,15 @@ body {
 
     .admin-botones .btn-small {
         width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-wrapper {
+        padding: 2rem 12px;
+    }
+
+    .login-shell .form-card {
+        padding: 1.8rem 1.2rem 1.6rem;
     }
 }

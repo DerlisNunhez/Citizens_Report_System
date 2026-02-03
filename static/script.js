@@ -248,8 +248,8 @@ function crearTarjetaReporte(reporte) {
         <img src="/static/uploads/${reporte.foto}" alt="Foto del reporte" class="reporte-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22%3E%3Crect fill=%22%23ddd%22 width=%22300%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2218%22 text-anchor=%22middle%22 fill=%22%23999%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
         <div class="reporte-contenido">
             <div class="reporte-categoria">${categoriaIcon} ${escapeHtml(reporte.categoria)}</div>
-            <div class="reporte-direccion">${escapeHtml(reporte.direccion)}</div>
             <div class="reporte-comentario">${escapeHtml(reporte.comentario)}</div>
+            <div class="reporte-direccion">${escapeHtml(reporte.direccion)}</div>
             <div class="reporte-footer">
                 <span class="reporte-estado ${estadoClass}">${reporte.estado}</span>
                 <span class="reporte-fecha">${formatearFecha(reporte.fecha_creacion)}</span>

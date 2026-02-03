@@ -140,6 +140,7 @@ def crear_nuevo_reporte():
     try:
         # ─── CAMPOS DE TEXTO ───
         ubicacion  = request.form.get('ubicacion', '').strip()
+        direccion  = request.form.get('direccion', '').strip()
         comentario = request.form.get('comentario', '').strip()
         email      = request.form.get('email', '').strip() or None
 
@@ -178,6 +179,7 @@ def crear_nuevo_reporte():
         # ------- BD --------
         reporte_id = crear_reporte(
             ubicacion=ubicacion,
+            direccion=direccion,
             comentario=comentario,
             foto=filename,
             email=email,

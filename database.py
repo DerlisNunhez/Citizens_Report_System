@@ -15,7 +15,7 @@ def get_db():
 
 
 def migrar_columna_categoria():
-    """Agrega la columna categoria si no existe (migraciÃ³n automÃ¡tica)."""
+    """Agrega la columna categoria si no existe (migración automática)."""
     try:
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
@@ -25,17 +25,34 @@ def migrar_columna_categoria():
         columnas = [col[1] for col in cursor.fetchall()]
         
         if 'categoria' not in columnas:
-            print("„ Migrando base de datos: agregando columna 'categoria'...")
+            print("→ Migrando base de datos: agregando columna 'categoria'...")
             cursor.execute('''
                 ALTER TABLE reportes 
                 ADD COLUMN categoria TEXT NOT NULL DEFAULT 'Otros'
             ''')
             conn.commit()
-            print(" Columna 'categoria' agregada exitosamente")
+            print("✓ Columna 'categoria' agregada exitosamente")
         
         conn.close()
     except Exception as e:
-        print(f" Error en migracion: {e}")
+        print(f"✗ Error en migración: {e}")
+
+
+def migrar_columna_direccion():
+    """Agrega la columna direccion si no existe (migración automática)."""
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute("PRAGMA table_info(reportes)")
+        columnas = [col[1] for col in cursor.fetchall()]
+        if 'direccion' not in columnas:
+            print("→ Migrando base de datos: agregando columna 'direccion'...")
+            cursor.execute("ALTER TABLE reportes ADD COLUMN direccion TEXT DEFAULT ''")
+            conn.commit()
+            print("✓ Columna 'direccion' agregada exitosamente")
+        conn.close()
+    except Exception as e:
+        print(f"✗ Error en migración: {e}")
 
 
 def init_db():
@@ -77,6 +94,7 @@ def init_db():
         CREATE TABLE IF NOT EXISTS reportes (
             id              INTEGER PRIMARY KEY AUTOINCREMENT,
             ubicacion       TEXT    NOT NULL,
+            direccion       TEXT    DEFAULT '',
             comentario      TEXT    NOT NULL,
             foto            TEXT    NOT NULL,
             email           TEXT,
@@ -97,7 +115,7 @@ def init_db():
     # Si la base de datos ya existi­a, ejecutar migraciones automÃ¡ticas
     if db_existe:
         migrar_columna_categoria()
-
+        migrar_columna_direccion()
 
 # -------------FUNCIONES DE USUARIOS---------------------------------------------------------------------------------------------------------------
 
@@ -139,7 +157,7 @@ def verificar_contrasena(contrasena, hash_almacenado):
 
 #---------------FUNCIONES DE REPORTES---------------------------------------------------------------------------------------------------------
 
-def crear_reporte(ubicacion, comentario, foto, lat=None, lng=None, categoria='Otros', email=None, usuario_correo=None):
+def crear_reporte(ubicacion, comentario, foto, lat=None, lng=None, categoria='Otros', direccion='', email=None, usuario_correo=None):
     """
     Crea un nuevo reporte.
     Retorna el ID del reporte creado.
@@ -149,9 +167,9 @@ def crear_reporte(ubicacion, comentario, foto, lat=None, lng=None, categoria='Ot
     
     cursor = conn.execute(
         '''INSERT INTO reportes 
-           (ubicacion, comentario, foto, categoria, email, lat, lng, estado, fecha_creacion, usuario_correo)
-           VALUES (?, ?, ?, ?, ?, ?, ?, 'Pendiente', ?, ?)''',
-        (ubicacion, comentario, foto, categoria, email, lat, lng, fecha, usuario_correo)
+           (ubicacion, direccion, comentario, foto, categoria, email, lat, lng, estado, fecha_creacion, usuario_correo)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Pendiente', ?, ?)''',
+        (ubicacion, direccion, comentario, foto, categoria, email, lat, lng, fecha, usuario_correo)
     )
     conn.commit()
     reporte_id = cursor.lastrowid

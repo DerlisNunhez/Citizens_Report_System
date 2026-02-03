@@ -292,9 +292,18 @@ async function verDetalleReporte(id) {
             </div>
             
             <div class="modal-info">
+                <strong>📝 Referencia:</strong>
+                <p>${escapeHtml(reporte.ubicacion)}</p>
+            </div>
+
+            <div class="modal-info">
                 <strong>📍 Dirección:</strong>
                 <p>${escapeHtml(reporte.direccion)}</p>
             </div>
+
+            <div class="modal-info">
+                <strong>🗺️ Ubicación en el mapa:</strong>
+            <div id="modal-map" style="height:220px; border-radius:8px; border:1px solid #ddd; margin-top:0.5rem; margin-bottom:1rem;"></div>            </div>
             
             <div class="modal-info">
                 <strong>💬 Descripción:</strong>
@@ -364,6 +373,14 @@ async function verDetalleReporte(id) {
         }
         
         abrirModal(contenido);
+
+        // Crear mapa dentro del modal con el marcador en las coordenadas del reporte
+        setTimeout(() => {
+            modalMapInstance = L.map('modal-map').setView([reporte.lat, reporte.lng], 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(modalMapInstance);
+            L.marker([reporte.lat, reporte.lng]).addTo(modalMapInstance);        }, 150);
         
     } catch (error) {
         alert('Error al cargar el reporte');
@@ -509,6 +526,10 @@ function abrirModal(contenido) {
 }
 
 function cerrarModal() {
+    if (modalMapInstance) {
+        modalMapInstance.remove();
+        modalMapInstance = null;
+    }
     document.getElementById('modal-reporte').classList.add('oculto');
 }
 
@@ -557,6 +578,7 @@ function formatearFecha(fechaString) {
 }
 
 function escapeHtml(text) {
+    if (text == null) return '';
     const map = {
         '&': '&amp;',
         '<': '&lt;',

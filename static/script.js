@@ -119,10 +119,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 mostrarMensaje(mensajeDiv, 'Debes seleccionar una ubicación en el mapa', 'error');
                 return;
             }
-            if (ubicacion.length < 5) {
-                mostrarMensaje(mensajeDiv, 'La dirección debe tener al menos 5 caracteres', 'error');
-                return;
-            }
             
             if (comentario.length < 10) {
                 mostrarMensaje(mensajeDiv, 'El comentario debe tener al menos 10 caracteres', 'error');
@@ -282,6 +278,7 @@ async function verDetalleReporte(id) {
         const categoriaIcon = obtenerIconoCategoria(reporte.categoria);
         
         let contenido = `
+        
             <h2>Detalle del Reporte #${reporte.id}</h2>
             
             <img src="/static/uploads/${reporte.foto}" alt="Foto del reporte" class="modal-imagen" onerror="this.style.display='none'">
@@ -302,7 +299,6 @@ async function verDetalleReporte(id) {
             </div>
 
             <div class="modal-info">
-                <strong>🗺️ Ubicación en el mapa:</strong>
             <div id="modal-map" style="height:220px; border-radius:8px; border:1px solid #ddd; margin-top:0.5rem; margin-bottom:1rem;"></div>            </div>
             
             <div class="modal-info">

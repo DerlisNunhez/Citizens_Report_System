@@ -142,6 +142,7 @@ def crear_nuevo_reporte():
         ubicacion  = request.form.get('ubicacion', '').strip()
         direccion  = request.form.get('direccion', '').strip()
         comentario = request.form.get('comentario', '').strip()
+        categoria  = request.form.get('categoria', 'Otros').strip()
         email      = request.form.get('email', '').strip() or None
 
         # ─── COORDENADAS (MAPA) ───
@@ -152,9 +153,6 @@ def crear_nuevo_reporte():
             return jsonify({'error': 'Debe marcar la ubicaciÃ³n en el mapa'}), 400
 
         # ─── VALIDACIONES ───
-        if not ubicacion or len(ubicacion) < 5:
-            return jsonify({'error': 'La dirección debe tener al menos 5 caracteres'}), 400
-
         if not comentario or len(comentario) < 10:
             return jsonify({'error': 'El comentario debe tener al menos 10 caracteres'}), 400
 
@@ -182,6 +180,7 @@ def crear_nuevo_reporte():
             direccion=direccion,
             comentario=comentario,
             foto=filename,
+            categoria=categoria,
             email=email,
             lat=float(lat),
             lng=float(lng),

@@ -17,18 +17,24 @@
         <div class="container">
             <h1 class="logo">REPORTES CIUDADANOS</h1>
             <div class="nav-links">
-                <button class="nav-btn active" onclick="mostrarSeccion('lista')">Reportes</button>
+                <button class="nav-btn active" data-seccion="lista"
+                        onclick="mostrarSeccion('lista')">Reportes</button>
+
                 {% if correo %}
-                <button class="nav-btn" onclick="mostrarSeccion('crear')">Crear Reporte</button>
+                <button class="nav-btn" data-seccion="crear"
+                        onclick="mostrarSeccion('crear')">Crear Reporte</button>
                 {% endif %}
+
                 {% if rol == 'admin' %}
-                <button class="nav-btn" onclick="mostrarSeccion('analiticas')">Analiticas</button>
+                <button class="nav-btn" data-seccion="analiticas"
+                        onclick="mostrarSeccion('analiticas')">Analiticas</button>
                 {% endif %}
+
                 {% if correo %}
                     <!-- Usuario logueado -->
                     <a href="/logout" class="nav-btn">Cerrar sesión</a>
                 {% else %}
-                    <!-- Usuario NO logueado -->
+                    <!-- Usuario no logueado -->
                     <a href="/login" class="nav-btn">Login</a>
                 {% endif %}
             </div>

@@ -5,40 +5,46 @@ let map;
 let marker;
 
 function mostrarSeccion(nombre) {
-    // Hide all sections
+    // ─── Ocultar todas las secciones ───
     document.querySelectorAll('.seccion').forEach(s => {
         s.classList.remove('active');
     });
-    
-    // Show the requested section
+
+    // ─── Mostrar la sección actual ───
     const seccion = document.getElementById(`seccion-${nombre}`);
     if (seccion) {
         seccion.classList.add('active');
     }
-    
-    // If showing the map section, initialize/update the map
+
+    // ─── Actualizar botón activo del navbar ───
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+
+    const btnActivo = document.querySelector(
+        `.nav-btn[data-seccion="${nombre}"]`
+    );
+    if (btnActivo) {
+        btnActivo.classList.add('active');
+    }
+
+    // ─── Acciones especiales por sección ───
     if (nombre === 'crear') {
-        // Small delay to ensure DOM is updated
         setTimeout(() => {
             initMap();
-            if (map) {
-                setTimeout(() => {
-                    map.invalidateSize(true);
-                }, 50);
-            }
-        }, 50);
+            map?.invalidateSize(true);
+        }, 100);
     }
-    
-    // Load reports if showing list section
+
     if (nombre === 'lista') {
         cargarReportes();
     }
-    
-    // Load analytics if showing analytics section
+
     if (nombre === 'analiticas') {
         cargarAnaliticas();
     }
 }
+
 
 function initMap() {
     // Don't initialize if map already exists
@@ -675,13 +681,3 @@ async function obtenerDireccionDesdeCoords(lat, lng) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Show first section
-    mostrarSeccion('crear');
-    
-    // Initialize filters
-    const filtroEstado = document.getElementById('filtro-estado');
-    if (filtroEstado) {
-        filtroEstado.addEventListener('change', cargarReportes);
-    }
-});

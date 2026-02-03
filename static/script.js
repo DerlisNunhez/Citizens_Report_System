@@ -3,6 +3,8 @@
 // ═══════════════════════════════════════════════════════════════════════════
 let map;
 let marker;
+let mapaReportes;
+let marcadoresReportes = [];
 
 function mostrarSeccion(nombre) {
     // ─── Ocultar todas las secciones ───
@@ -43,6 +45,14 @@ function mostrarSeccion(nombre) {
     if (nombre === 'analiticas') {
         cargarAnaliticas();
     }
+    if (nombre === 'mapa') {
+    setTimeout(() => {
+        initMapaReportes();
+        mapaReportes.invalidateSize(true);
+        cargarReportesEnMapa();
+    }, 150);
+}
+
 }
 
 
@@ -94,6 +104,17 @@ document.addEventListener('DOMContentLoaded', function() {
         filtroEstado.addEventListener('change', cargarReportes);
     }
 });
+
+function initMapaReportes() {
+    if (mapaReportes) return;
+
+    mapaReportes = L.map('mapa-reportes')
+        .setView([-25.2637, -57.5759], 12); // Asunción
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(mapaReportes);
+}
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CREAR REPORTE
@@ -699,3 +720,30 @@ async function obtenerDireccionDesdeCoords(lat, lng) {
     }
 }
 
+async function cargarReportesEnMapa() {
+    try {
+        const response = await fetch('/api/reportes');
+        const reportes = await response.json();
+
+        // Limpiar marcadores anteriores
+        marcadoresReportes.forEach(m => mapaReportes.removeLayer(m));
+        marcadoresReportes = [];
+
+        reportes.forEach(reporte => {
+            if (!reporte.lat || !reporte.lng) return;
+
+            const marker = L.marker([reporte.lat, reporte.lng])
+                .addTo(mapaReportes)
+                .bindPopup(`
+                    <strong>${reporte.categoria}</strong><br>
+                    ${reporte.direccion || 'Sin dirección'}<br>
+                    <em>Estado: ${reporte.estado}</em>
+                `);
+
+            marcadoresReportes.push(marker);
+        });
+
+    } catch (error) {
+        console.error('Error cargando reportes en el mapa', error);
+    }
+}

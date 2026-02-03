@@ -34,6 +34,9 @@
                         onclick="mostrarSeccion('crear')">Crear Reporte</button>
                 {% endif %}
 
+                <button class="nav-btn" data-seccion="mapa"
+                        onclick="mostrarSeccion('mapa')">Mapa</button>
+
                 {% if rol == 'admin' %}
                 <button class="nav-btn" data-seccion="analiticas"
                         onclick="mostrarSeccion('analiticas')">Analiticas</button>
@@ -238,6 +241,12 @@
             </div>
         </section>
         {% endif %}
+
+        <!-- Sección: Mapa -->
+        <section id="seccion-mapa" class="seccion seccion-mapa">
+            <div id="mapa-reportes"></div>
+        </section>
+
 
     </div>
 

@@ -224,6 +224,7 @@ body {
 /* FILTROS */
 .filtros {
     margin-bottom: 1.5rem;
+    color: white;
 }
 
 .filtros select {
@@ -829,3 +830,17 @@ body {
         padding: 1.8rem 1.2rem 1.6rem;
     }
 }
+
+.seccion-mapa {
+    padding: 0;
+    margin: 0;
+}
+
+#mapa-reportes {
+    width: 100vw;                 /* ancho total de la ventana */
+    height: calc(100vh - 80px);   /* alto total menos navbar */
+    margin-left: calc(-50vw + 50%);
+    
+    border-radius: 0;
+}
+

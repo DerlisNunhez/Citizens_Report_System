@@ -150,7 +150,7 @@ def crear_nuevo_reporte():
         lng = request.form.get('lng')
 
         if not lat or not lng:
-            return jsonify({'error': 'Debe marcar la ubicaciÃ³n en el mapa'}), 400
+            return jsonify({'error': 'Debe marcar la ubicación en el mapa'}), 400
 
         # ─── VALIDACIONES ───
         if not comentario or len(comentario) < 10:
@@ -163,7 +163,7 @@ def crear_nuevo_reporte():
         foto = request.files['foto']
 
         if foto.filename == '':
-            return jsonify({'error': 'No se seleccionÃ³ ningÃºn archivo'}), 400
+            return jsonify({'error': 'No se seleccionó ningún archivo'}), 400
 
         if not allowed_file(foto.filename):
             return jsonify({'error': 'Tipo de archivo no permitido'}), 400
@@ -218,12 +218,12 @@ def cambiar_estado_reporte(reporte_id):
         # Validar estado
         estados_validos = ['Pendiente', 'Verificando', 'Solucionado', 'Rechazado']
         if nuevo_estado not in estados_validos:
-            return jsonify({'error': 'Estado no vÃ¡lido'}), 400
+            return jsonify({'error': 'Estado no válido'}), 400
         
         # Si es rechazado, verificar que haya razón
         if nuevo_estado == 'Rechazado':
             if not razon_rechazo or len(razon_rechazo.strip()) < 10:
-                return jsonify({'error': 'Debe proporcionar una razÃ³n de rechazo de al menos 10 caracteres'}), 400
+                return jsonify({'error': 'Debe proporcionar una razón de rechazo de al menos 10 caracteres'}), 400
         
         # Actualizar estado
         actualizar_estado_reporte(reporte_id, nuevo_estado, razon_rechazo)

@@ -56,7 +56,7 @@ function initMap() {
         return;
     }
     
-    map = L.map('map').setView([-25.5095, -54.6110], 13);
+    map = L.map('map').setView([-25.2637, -57.5759], 13);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors',

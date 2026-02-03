@@ -151,9 +151,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // Validar tamaño de archivo (5MB)
-            if (foto.size > 5 * 1024 * 1024) {
-                mostrarMensaje(mensajeDiv, 'La foto no debe superar los 5MB', 'error');
+            // Validar tamaño de archivo (25MB)
+            if (foto.size > 25 * 1024 * 1024) {
+                mostrarMensaje(
+                    mensajeDiv,
+                    'La foto no debe superar los 25MB',
+                    'error'
+                );
                 return;
             }
             

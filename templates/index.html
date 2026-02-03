@@ -124,18 +124,7 @@
                         required
                     >
 
-                    <small>Formatos: JPG, PNG, WEBP - Maximo 5MB</small>
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email (Opcional)</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        placeholder="tu@email.com"
-                    >
-                    <small>Para recibir notificaciones sobre tu reporte</small>
+                    <small>Formatos: JPG, PNG, WEBP - Maximo 25MB</small>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Enviar Reporte</button>
@@ -148,6 +137,14 @@
         <section id="seccion-lista" class="seccion">
             <h2>Reportes</h2>
             <p class="descripcion">Visualiza y gestiona todos los reportes de la comunidad</p>
+
+            {% if not correo %}
+            <div style="background-color: rgba(255, 255, 255, 0.9); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; text-align: center;">
+                <p style="color: #004085; font-weight: 600; margin: 0;">
+                    Para crear un reporte <a href="/login" style="color: #004085; text-decoration: underline;">inicie sesión</a>
+                </p>
+            </div>
+            {% endif %}
 
             <!-- Filtros -->
             <div class="filtros">

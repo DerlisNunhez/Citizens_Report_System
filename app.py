@@ -17,7 +17,7 @@ app.config['PROPAGATE_EXCEPTIONS'] = True
 # Configuracion de uploads
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp'}
-MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
+MAX_FILE_SIZE = 25 * 1024 * 1024  # 25MB
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = MAX_FILE_SIZE
@@ -89,6 +89,40 @@ def login():
     return render_template('login.html', error=error)
 
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    """Página de registro de nuevos usuarios."""
+    error = None
+    mensaje = None
+
+    if request.method == 'POST':
+        correo = request.form.get('correo', '').strip()
+        contrasena = request.form.get('contrasena', '')
+        confirmar_contrasena = request.form.get('confirmar_contrasena', '')
+
+        # Validaciones
+        if not correo or not contrasena:
+            error = 'Todos los campos son obligatorios.'
+        elif len(contrasena) < 6:
+            error = 'La contraseña debe tener al menos 6 caracteres.'
+        elif contrasena != confirmar_contrasena:
+            error = 'Las contraseñas no coinciden.'
+        elif '@' not in correo or '.' not in correo:
+            error = 'El correo no es válido.'
+        else:
+            # Intentar crear el usuario
+            exito = crear_usuario(correo, contrasena, rol='usuario')
+            
+            if exito:
+                mensaje = '✅ Cuenta creada exitosamente. Ahora puedes iniciar sesión.'
+                # Redirigir al login después de 2 segundos
+                return render_template('register.html', mensaje=mensaje, redirect_login=True)
+            else:
+                error = 'Este correo ya está registrado. Intenta con otro.'
+
+    return render_template('register.html', error=error, mensaje=mensaje)
+
+
 @app.route('/logout')
 @login_requerido
 def logout():
@@ -143,7 +177,6 @@ def crear_nuevo_reporte():
         direccion  = request.form.get('direccion', '').strip()
         comentario = request.form.get('comentario', '').strip()
         categoria  = request.form.get('categoria', 'Otros').strip()
-        email      = request.form.get('email', '').strip() or None
 
         # ─── COORDENADAS (MAPA) ───
         lat = request.form.get('lat')
@@ -181,7 +214,6 @@ def crear_nuevo_reporte():
             comentario=comentario,
             foto=filename,
             categoria=categoria,
-            email=email,
             lat=float(lat),
             lng=float(lng),
             usuario_correo=session.get('correo')
@@ -194,7 +226,6 @@ def crear_nuevo_reporte():
 
 
 @app.route('/api/reportes/<int:reporte_id>', methods=['GET'])
-@login_requerido
 def obtener_reporte(reporte_id):
     """Obtiene un reporte específico por ID."""
     reporte = obtener_reporte_por_id(reporte_id)

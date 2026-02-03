@@ -3,10 +3,17 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<link rel="stylesheet" href="/static/login_style.css">
+<link rel="stylesheet" href="/static/styles.css">
 <title>Inicio de sesion</title>
 </head>
 <body>
+
+<!-- Video de fondo -->
+<div class="video-background">
+    <video autoplay muted loop playsinline>
+        <source src="{{ url_for('static', filename='animaciones_del_fondo.mp4') }}" type="video/mp4">
+    </video>
+</div>
 
 <!-- NAVBAR -->
 <nav class="navbar">

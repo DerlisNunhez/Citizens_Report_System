@@ -10,7 +10,7 @@ from database import (
 
 app = Flask(__name__)
 
-# Clave secreta para firmar las cookies de sesiÃ³n
+# Clave secreta para firmar las cookies de sesión
 app.secret_key = 'cambiar_esto_en_produccion_por_una_clave_segura'
 app.config['PROPAGATE_EXCEPTIONS'] = True
 
@@ -27,14 +27,14 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
 def allowed_file(filename):
-    """Verifica si el archivo tiene una extensiÃ³n permitida."""
+    """Verifica si el archivo tiene una extensión permitida."""
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 # ─── DECORADORES DE PROTECCIÓN ────────────────────────────────────────────
 
 def login_requerido(f):
-    """Redirige a login si el usuario no estÃ¡ autenticado."""
+    """Redirige a login si el usuario no está autenticado."""
     @wraps(f)
     def decorado(*args, **kwargs):
         if 'correo' not in session:
@@ -84,7 +84,7 @@ def login():
                 return redirect(url_for('admin'))
             return redirect(url_for('dashboard'))
         else:
-            error = 'Correo o contraseÃ±a incorrectos.'
+            error = 'Correo o contraseña incorrectos.'
 
     return render_template('login.html', error=error)
 
@@ -340,7 +340,7 @@ def eliminar_reporte_ruta(reporte_id):
 @app.route('/api/estadisticas', methods=['GET'])
 @rol_admin_requerido
 def obtener_estadisticas_reportes():
-    """Obtiene estadÃ­sticas de reportes (solo admin)."""
+    """Obtiene estadísticas de reportes (solo admin)."""
     stats = obtener_estadisticas()
     return jsonify(stats)
 

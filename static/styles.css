@@ -777,6 +777,7 @@ body {
     color: #aaa;
     pointer-events: none;
     transition: color .2s;
+    z-index: 2;
 }
 
 .input-wrap:focus-within svg {
@@ -785,6 +786,9 @@ body {
 
 .input-wrap input {
     padding: .75rem .75rem .75rem 2.6rem;
+    position: relative;
+    z-index: 1;
+    background-color: white;
 }
 
 .toggle-pass {
@@ -802,6 +806,7 @@ body {
     align-items: center;
     justify-content: center;
     transition: color .2s;
+    z-index: 2;
 }
 
 .toggle-pass:hover {

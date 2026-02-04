@@ -292,18 +292,26 @@ body {
     align-items: center;
     gap: 0.75rem;
     margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
 
+.filtro-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1 1 auto;
+    min-width: 200px;
 }
 
 .filtros label {
-     padding: 0.4rem 1rem;
+    padding: 0.4rem 1rem;
     border: 2px solid #4487cfef;
     border-radius: 8px;
-    background-color:  rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 255, 255, 0.9);
     color: #004085;
     font-size: 0.95rem;
-    font-weight: 600; 
-
+    font-weight: 600;
+    white-space: nowrap;
 }
 
 .filtros select {
@@ -316,6 +324,8 @@ body {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
+    flex: 1;
+    min-width: 140px;
 }
 
 .filtros select:hover {
@@ -876,6 +886,7 @@ body {
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
+    /* Navbar */
     .navbar {
         position: relative;
         z-index: 2000;
@@ -907,12 +918,67 @@ body {
         text-align: center;
     }
 
+    /* Contenido principal */
+    .container {
+        padding: 0 15px;
+    }
+
     .main-content {
         padding-top: 1rem;
+        padding-bottom: 1rem;
         margin-top: 0;
     }
 
+    /* Títulos de sección */
+    #seccion-crear h2,
+    #seccion-lista h2,
+    #seccion-analiticas h2 {
+        font-size: 1.5rem;
+        padding: 0.5rem 0.8rem;
+        text-align: center;
+    }
+
+    .descripcion,
+    #seccion-lista .descripcion {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+        text-align: center;
+    }
+
+    /* Formularios */
+    .form-card {
+        padding: 1.5rem 1rem;
+        margin: 0 auto;
+    }
+
+    .form-group label {
+        font-size: 0.95rem;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        font-size: 16px; /* Evita zoom en iOS */
+        padding: 0.65rem;
+    }
+
+    .form-group small {
+        font-size: 0.8rem;
+    }
+
+    /* Botones */
+    .btn {
+        padding: 0.65rem 1.2rem;
+        font-size: 0.95rem;
+    }
+
+    .btn-full {
+        width: 100%;
+    }
+
+    /* Mapa */
     #map {
+        height: 250px !important;
         position: relative;
         z-index: 1;
     }
@@ -921,44 +987,278 @@ body {
         position: relative;
         z-index: 1;
     }
+    
     .leaflet-control-zoom-in,
-    .leaflet-control-zoom-out{
+    .leaflet-control-zoom-out {
         z-index: 1;
     }
-    .leaflet-control-container{
+    
+    .leaflet-control-container {
         z-index: 2;
     }
 
-    .modal-content {
-        width: 95%;
-        padding: 1.5rem;
-        margin-top: 60px;
+    /* Filtros responsive */
+    .filtros {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
     }
-    
+
+    .filtro-item {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+
+    .filtros label {
+        width: 100%;
+        text-align: center;
+        padding: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .filtros select {
+        width: 100%;
+        padding: 0.6rem 1rem;
+        font-size: 16px; /* Evita zoom en iOS */
+    }
+
+    /* Grid de reportes */
     .reportes-grid {
         grid-template-columns: 1fr;
+        gap: 1rem;
     }
-    
+
+    .reporte-card {
+        margin: 0;
+    }
+
+    .reporte-imagen {
+        height: 180px;
+    }
+
+    .reporte-contenido {
+        padding: 0.85rem;
+    }
+
+    .reporte-categoria {
+        font-size: 0.75rem;
+    }
+
+    .reporte-direccion,
+    .reporte-comentario {
+        font-size: 0.85rem;
+    }
+
+    /* Estadísticas */
     .stats-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+
+    .stat-card {
+        padding: 1rem;
+    }
+
+    .stat-card h3 {
+        font-size: 2rem;
+    }
+
+    .stat-card p {
+        font-size: 0.85rem;
+    }
+
+    /* Analíticas */
+    .analiticas-grafico {
+        padding: 1.5rem 1rem;
+    }
+
+    .analiticas-grafico h3,
+    .analiticas-recientes h3 {
+        font-size: 1.1rem;
+    }
+
+    .barra-label {
+        width: 80px;
+        font-size: 0.8rem;
+    }
+
+    .barra-contenedor {
+        height: 20px;
+    }
+
+    /* Modal */
+    .modal-content {
+        width: 95%;
+        padding: 1.5rem 1rem;
+        margin-top: 60px;
+        max-height: 85vh;
+    }
+
+    .modal-close {
+        font-size: 1.5rem;
+        top: 0.5rem;
+        right: 0.5rem;
+    }
+
+    .modal-imagen {
+        max-height: 300px;
+        margin: 0.75rem 0.5rem;
+        width: calc(100% - 1rem);
+    }
+
+    .modal-info {
+        padding: 0 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .modal-info strong {
+        font-size: 0.9rem;
+    }
+
+    .modal-info p {
+        font-size: 0.85rem;
+    }
+
+    #modal-map {
+        height: 180px;
+    }
+
+    /* Admin */
+    .admin-acciones {
+        padding: 1rem 0.5rem;
+    }
+
+    .admin-categoria {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .select-categoria {
+        width: 100%;
     }
 
     .admin-botones {
         flex-direction: column;
+        gap: 0.5rem;
     }
 
     .admin-botones .btn-small {
         width: 100%;
     }
+
+    /* Footer */
+    .footer {
+        padding: 1.5rem 1rem;
+        margin-top: 2rem;
+    }
+
+    .footer-container {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        text-align: center;
+    }
+
+    .footer-section h4 {
+        font-size: 1rem;
+    }
+
+    .footer-section p {
+        font-size: 0.85rem;
+    }
 }
 
 @media (max-width: 480px) {
+    /* Navbar extra pequeño */
+    .logo {
+        font-size: 1rem;
+    }
+
+    .nav-btn {
+        padding: 0.35rem 0.6rem;
+        font-size: 0.75rem;
+        min-width: 70px;
+    }
+
+    /* Contenido */
+    .container {
+        padding: 0 10px;
+    }
+
+    /* Títulos */
+    #seccion-crear h2,
+    #seccion-lista h2,
+    #seccion-analiticas h2 {
+        font-size: 1.3rem;
+        padding: 0.4rem 0.6rem;
+    }
+
+    .descripcion,
+    #seccion-lista .descripcion {
+        font-size: 0.85rem;
+        padding: 0.35rem 0.6rem;
+    }
+
+    /* Formularios */
+    .form-card {
+        padding: 1.2rem 0.8rem;
+    }
+
+    /* Mapa más pequeño */
+    #map {
+        height: 220px !important;
+    }
+
+    /* Reportes */
+    .reporte-imagen {
+        height: 160px;
+    }
+
+    .reporte-contenido {
+        padding: 0.75rem;
+    }
+
+    /* Estadísticas en una columna */
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-card h3 {
+        font-size: 1.8rem;
+    }
+
+    /* Barra de analíticas */
+    .barra-label {
+        width: 70px;
+        font-size: 0.75rem;
+    }
+
+    /* Modal más pequeño */
+    .modal-content {
+        padding: 1rem 0.75rem;
+    }
+
+    .modal-imagen {
+        max-height: 250px;
+    }
+
+    #modal-map {
+        height: 160px;
+    }
+
+    /* Login */
     .login-wrapper {
         padding: 2rem 12px;
     }
 
     .login-shell .form-card {
         padding: 1.8rem 1.2rem 1.6rem;
+    }
+
+    /* Footer */
+    .footer {
+        padding: 1.2rem 0.8rem;
     }
 }
 

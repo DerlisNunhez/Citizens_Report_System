@@ -3,6 +3,8 @@
 // ═══════════════════════════════════════════════════════════════════════════
 let map;
 let marker;
+let mapaReportes;
+let marcadoresReportes = [];
 
 function mostrarSeccion(nombre) {
     // ─── Ocultar todas las secciones ───
@@ -43,6 +45,14 @@ function mostrarSeccion(nombre) {
     if (nombre === 'analiticas') {
         cargarAnaliticas();
     }
+    if (nombre === 'mapa') {
+    setTimeout(() => {
+        initMapaReportes();
+        mapaReportes.invalidateSize(true);
+        cargarReportesEnMapa();
+    }, 150);
+}
+
 }
 
 
@@ -95,6 +105,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+function initMapaReportes() {
+    if (mapaReportes) return;
+
+    mapaReportes = L.map('mapa-reportes')
+        .setView([-25.2637, -57.5759], 12); // Asunción
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(mapaReportes);
+}
+
 // ═══════════════════════════════════════════════════════════════════════════
 // CREAR REPORTE
 // ═══════════════════════════════════════════════════════════════════════════
@@ -130,9 +151,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // Validar tamaño de archivo (5MB)
-            if (foto.size > 5 * 1024 * 1024) {
-                mostrarMensaje(mensajeDiv, 'La foto no debe superar los 5MB', 'error');
+            // Validar tamaño de archivo (25MB)
+            if (foto.size > 25 * 1024 * 1024) {
+                mostrarMensaje(
+                    mensajeDiv,
+                    'La foto no debe superar los 25MB',
+                    'error'
+                );
                 return;
             }
             
@@ -248,8 +273,8 @@ function crearTarjetaReporte(reporte) {
         <img src="/static/uploads/${reporte.foto}" alt="Foto del reporte" class="reporte-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22%3E%3Crect fill=%22%23ddd%22 width=%22300%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2218%22 text-anchor=%22middle%22 fill=%22%23999%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
         <div class="reporte-contenido">
             <div class="reporte-categoria">${categoriaIcon} ${escapeHtml(reporte.categoria)}</div>
-            <div class="reporte-direccion">${escapeHtml(reporte.direccion)}</div>
             <div class="reporte-comentario">${escapeHtml(reporte.comentario)}</div>
+            <div class="reporte-direccion">${escapeHtml(reporte.direccion)}</div>
             <div class="reporte-footer">
                 <span class="reporte-estado ${estadoClass}">${reporte.estado}</span>
                 <span class="reporte-fecha">${formatearFecha(reporte.fecha_creacion)}</span>
@@ -699,3 +724,30 @@ async function obtenerDireccionDesdeCoords(lat, lng) {
     }
 }
 
+async function cargarReportesEnMapa() {
+    try {
+        const response = await fetch('/api/reportes');
+        const reportes = await response.json();
+
+        // Limpiar marcadores anteriores
+        marcadoresReportes.forEach(m => mapaReportes.removeLayer(m));
+        marcadoresReportes = [];
+
+        reportes.forEach(reporte => {
+            if (!reporte.lat || !reporte.lng) return;
+
+            const marker = L.marker([reporte.lat, reporte.lng])
+                .addTo(mapaReportes)
+                .bindPopup(`
+                    <strong>${reporte.categoria}</strong><br>
+                    ${reporte.direccion || 'Sin dirección'}<br>
+                    <em>Estado: ${reporte.estado}</em>
+                `);
+
+            marcadoresReportes.push(marker);
+        });
+
+    } catch (error) {
+        console.error('Error cargando reportes en el mapa', error);
+    }
+}

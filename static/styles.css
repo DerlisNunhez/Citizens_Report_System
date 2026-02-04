@@ -1314,3 +1314,29 @@ body {
 .main-content {
     flex: 1;
 }
+@media (max-width: 768px) {
+  .icon-wrap {
+    display: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-wrapper {
+    padding: 2rem 12px;
+  }
+  .form-card {
+    padding: 1.8rem 1.2rem 1.6rem;
+  }
+  .card-header {
+    display: none !important;
+  }
+  .card-header .icon-wrap {
+    display: none !important;
+  }
+  .input-wrap svg {
+    display: none !important;
+  }
+  .form-group input {
+    padding-left: 0.75rem !important;
+  }
+}

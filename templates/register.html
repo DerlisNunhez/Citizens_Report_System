@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="stylesheet" href="/static/styles.css">
+<title>Registro de Usuario</title>
+<link rel="icon" type="image/png"
+    href="{{ url_for('static', filename='pinguino_rel_icon.webp')}}">
+</head>
+<body>
+
+<!-- Video de fondo -->
+<div class="video-background">
+    <video autoplay muted loop playsinline>
+        <source src="{{ url_for('static', filename='animaciones_del_fondo.mp4') }}" type="video/mp4">
+    </video>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="container">
+    <div class="logo">
+      REPORTES CIUDADANOS
+    </div>
+  </div>
+</nav>
+
+<!-- REGISTRO -->
+<div class="login-wrapper">
+  <div class="login-shell">
+    <div class="form-card">
+
+      <!-- card header -->
+      <div class="card-header">
+        <div class="icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="8.5" cy="7" r="4"/>
+            <line x1="20" y1="8" x2="20" y2="14"/>
+            <line x1="23" y1="11" x2="17" y2="11"/>
+          </svg>
+        </div>
+        <h2>Crear Cuenta Nueva</h2>
+        <p>Regístrate para reportar problemas en tu comunidad</p>
+      </div>
+
+      <!-- form -->
+      <form id="registerForm" method="POST" action="/register">
+
+        <!-- correo -->
+        <div class="form-group">
+          <label for="correo">Correo electrónico</label>
+          <div class="input-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <path d="M22 7l-10 6L2 7"/>
+            </svg>
+            <input type="email" id="correo" name="correo" required autocomplete="email" placeholder="tu@email.com" />
+          </div>
+          <small>Usa un correo válido</small>
+        </div>
+
+        <!-- contraseña -->
+        <div class="form-group">
+          <label for="contrasena">Contraseña</label>
+          <div class="input-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <input type="password" id="contrasena" name="contrasena" required autocomplete="new-password" placeholder="Mínimo 6 caracteres" />
+          </div>
+          <small>Mínimo 6 caracteres</small>
+        </div>
+
+        <!-- confirmar contraseña -->
+        <div class="form-group">
+          <label for="confirmar_contrasena">Confirmar Contraseña</label>
+          <div class="input-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <input type="password" id="confirmar_contrasena" name="confirmar_contrasena" required autocomplete="new-password" placeholder="Repite tu contraseña" />
+          </div>
+        </div>
+
+        <!-- submit -->
+        <button type="submit" class="btn btn-primary btn-full">Crear Cuenta</button>
+
+        <!-- mensaje de error/exito -->
+        {% if error %}
+        <div id="mensajeRegistro" class="mensaje error">{{ error }}</div>
+        {% elif mensaje %}
+        <div id="mensajeRegistro" class="mensaje exito">{{ mensaje }}</div>
+        {% else %}
+        <div id="mensajeRegistro" class="mensaje error oculto"></div>
+        {% endif %}
+      </form>
+
+      <!-- divider + login -->
+      <div class="divider"><span>o</span></div>
+      <p class="register-link">
+        ¿Ya tienes cuenta? <a href="/login">Inicia sesión aquí</a>
+      </p>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// Validacion del lado del cliente
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+    const contrasena = document.getElementById('contrasena').value;
+    const confirmar = document.getElementById('confirmar_contrasena').value;
+    const mensaje = document.getElementById('mensajeRegistro');
+    
+    if (contrasena.length < 6) {
+        e.preventDefault();
+        mensaje.textContent = 'La contraseña debe tener al menos 6 caracteres';
+        mensaje.className = 'mensaje error';
+        mensaje.classList.remove('oculto');
+        return false;
+    }
+    
+    if (contrasena !== confirmar) {
+        e.preventDefault();
+        mensaje.textContent = 'Las contraseñas no coinciden';
+        mensaje.className = 'mensaje error';
+        mensaje.classList.remove('oculto');
+        return false;
+    }
+});
+</script>
+
+</body>
+</html>

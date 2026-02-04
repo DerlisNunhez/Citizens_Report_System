@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <link rel="stylesheet" href="/static/styles.css">
 <title>Inicio de sesion</title>
+<link rel="icon" type="image/png"
+    href="{{ url_for('static', filename='pinguino_rel_icon.webp')}}">
 </head>
 <body>
 
@@ -76,7 +78,7 @@
             <input type="checkbox" id="recordar" />
             Recordarme
           </label>
-          <a href="#">¿Olvidaste tu contraseÃ±a?</a>
+          <a href="#">¿Olvidaste tu contraseña?</a>
         </div>
 
         <!-- submit -->
@@ -93,13 +95,33 @@
       <!-- divider + registro -->
       <div class="divider"><span>o</span></div>
       <p class="register-link">
-        ¿No tienes cuenta? <a href="#">Regi­strate aqui­</a>
+        ¿No tienes cuenta? <a href="/register">Regístrate aquí</a>
       </p>
 
     </div>
   </div>
 </div>
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-section">
+            <h4>Reportes Ciudadanos</h4>
+            <p>Plataforma para reportar problemas de infraestructura urbana.</p>
+        </div>
 
+        <div class="footer-section">
+            <h4>Contacto</h4>
+            <p>📧 nerdsquad@reportesciudadanos.com</p>
+            <p>📍 Paraguay</p>
+        </div>
+
+        <div class="footer-section">
+            <h4>Información</h4>
+            <p>Proyecto académico</p>
+            <p>© 2026 - Todos los derechos reservados</p>
+        </div>
+    </div>
+</footer>
+     
 
 
 </body>

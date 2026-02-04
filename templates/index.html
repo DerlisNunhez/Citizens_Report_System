@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reportes de Infraestructura</title>
@@ -9,7 +10,8 @@
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin="">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
+    <link rel="icon" type="image/png"
+            href="{{ url_for('static', filename='pinguino_rel_icon.webp')}}">
 </head>
 <body>
     <!-- Video de fondo -->
@@ -31,6 +33,9 @@
                 <button class="nav-btn" data-seccion="crear"
                         onclick="mostrarSeccion('crear')">Crear Reporte</button>
                 {% endif %}
+
+                <button class="nav-btn" data-seccion="mapa"
+                        onclick="mostrarSeccion('mapa')">Mapa</button>
 
                 {% if rol == 'admin' %}
                 <button class="nav-btn" data-seccion="analiticas"
@@ -119,18 +124,7 @@
                         required
                     >
 
-                    <small>Formatos: JPG, PNG, WEBP - Maximo 5MB</small>
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email (Opcional)</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        placeholder="tu@email.com"
-                    >
-                    <small>Para recibir notificaciones sobre tu reporte</small>
+                    <small>Formatos: JPG, PNG, WEBP - Maximo 25MB</small>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Enviar Reporte</button>
@@ -144,18 +138,45 @@
             <h2>Reportes</h2>
             <p class="descripcion">Visualiza y gestiona todos los reportes de la comunidad</p>
 
-            <!-- Filtros -->
-            <div class="filtros">
-                <label for="filtro-estado">Filtrar por estado:</label>
-                <select id="filtro-estado" onchange="cargarReportes()">
-                    <option value="Todos">Todos</option>
-                    <option value="Pendiente">Pendiente</option>
-                    <option value="Verificando">Verificando</option>
-                    <option value="Solucionado">Solucionado</option>
-                    <option value="Rechazado">Rechazado</option>
-                </select>
+            {% if not correo %}
+            <div style="background-color: rgba(255, 255, 255, 0.9); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; text-align: center;">
+                <p style="color: #004085; font-weight: 600; margin: 0;">
+                    Para crear un reporte <a href="/login" style="color: #004085; text-decoration: underline;">inicie sesión</a>
+                </p>
             </div>
+            {% endif %}
 
+            <!-- Filtros -->
+
+            <div class="filtros">
+                <div class="filtro-item">
+                    <label for="filtro-estado">Filtrar por estado</label>
+                    <select id="filtro-estado" onchange="cargarReportes()">
+                        <option value="Todos">Todos</option>
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Verificando">Verificando</option>
+                        <option value="Solucionado">Solucionado</option>
+                        <option value="Rechazado">Rechazado</option>
+                    </select>
+                </div>
+
+                <div class="filtro-item">
+                    <label for="filtro-categoria">Filtrar por categoría</label>
+                    <select id="filtro-categoria" onchange="cargarReportes()">
+                        <option value="Todas">Todas</option>
+                        <option value="Vías y Tránsito">Vías y Tránsito</option>
+                        <option value="Alumbrado Público">Alumbrado Público</option>
+                        <option value="Agua y Saneamiento">Agua y Saneamiento</option>
+                        <option value="Residuos y Limpieza">Residuos y Limpieza</option>
+                        <option value="Parques y Espacios Públicos">Parques y Espacios Públicos</option>
+                        <option value="Electricidad y Telecomunicaciones">Electricidad y Telecomunicaciones</option>
+                        <option value="Edificaciones Públicas">Edificaciones Públicas</option>
+                        <option value="Seguridad Urbana">Seguridad Urbana</option>
+                        <option value="Transporte Público">Transporte Público</option>
+                        <option value="Otros">Otros</option>
+                    </select>
+                </div>
+            </div>
             <!-- Grid de reportes -->
             <div id="lista-reportes" class="reportes-grid">
                 <p class="cargando">Cargando reportes...</p>
@@ -237,6 +258,12 @@
         </section>
         {% endif %}
 
+        <!-- Sección: Mapa -->
+        <section id="seccion-mapa" class="seccion seccion-mapa">
+            <div id="mapa-reportes"></div>
+        </section>
+
+
     </div>
 
 
@@ -248,5 +275,25 @@
         </div>
     </div>
     <script src="/static/script.js"></script>
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-section">
+            <h4>Reportes Ciudadanos</h4>
+            <p>Plataforma para reportar problemas de infraestructura urbana.</p>
+        </div>
+
+        <div class="footer-section">
+            <h4>Contacto</h4>
+            <p>📧 nerdsquad@reportesciudadanos.com</p>
+            <p>📍 Paraguay</p>
+        </div>
+
+        <div class="footer-section">
+            <h4>Información</h4>
+            <p>Proyecto académico</p>
+            <p>© 2026 - Todos los derechos reservados</p>
+        </div>
+    </div>
+</footer>
 </body>
 </html>

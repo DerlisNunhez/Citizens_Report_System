@@ -98,7 +98,71 @@ body {
     display: block;
 }
 
-.seccion h2 {
+/* ===== TITULOS POR SECCIÓN ===== */
+
+/* Crear Nuevo Reporte */
+#seccion-crear h2 {
+    display: block;
+    background-color: #004085;
+    color: #fff;
+    padding: 0.6rem 0.6rem;
+    border-radius: 8px;
+    margin-bottom: 0.6rem;
+
+
+}
+
+/* Reportes */
+#seccion-lista h2 {
+    display: inline-block;      /* ajusta el fondo al texto */
+    background-color: #004085;
+    color: #fff;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+
+    margin: 0;                  /* elimina espacio extra */
+}
+
+/* Analíticas */
+#seccion-analiticas h2 {
+    display: inline-block;
+    background-color: #004085;
+    color: #fff;
+    padding: 0.6rem 0.6rem;
+    border-radius: 8px;
+    margin-bottom: 0.6rem;
+    margin: 0;
+    width: auto;
+    
+}
+
+#seccion-lista .descripcion {
+    display: inline-block;      /* fondo se ajusta al texto */
+    margin-top: 0.6rem;         /* espacio justo debajo del título */
+    margin-bottom: 0;
+
+    background-color: #004085;
+    color: #ffffff;
+    padding: 0.5rem 0.9rem;
+    border-radius: 8px;
+}
+
+
+
+
+.descripcion {
+    display: inline-block;      /* CLAVE: ajusta el fondo al texto */
+    background-color: #004085;
+    color: #ffffff;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+
+    /* eliminar espacios extra */
+    margin: 0;
+    width: auto;
+}
+
+/* .seccion h2 {
     font-size: 2rem;
     margin-bottom: 0.5rem;
     color: #fff;
@@ -107,7 +171,7 @@ body {
 .descripcion {
     color: #fff;
     margin-bottom: 2rem;
-}
+} */
 
 /* FORMULARIOS */
 
@@ -222,16 +286,66 @@ body {
 }
 
 /* FILTROS */
+
 .filtros {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
     margin-bottom: 1.5rem;
+
+}
+
+.filtros label {
+     padding: 0.4rem 1rem;
+    border: 2px solid #4487cfef;
+    border-radius: 8px;
+    background-color:  rgba(255, 255, 255, 0.9);
+    color: #004085;
+    font-size: 0.95rem;
+    font-weight: 600; 
+
 }
 
 .filtros select {
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
+    padding: 0.4rem 1.3rem;
+    border: 2px solid #4487cfef;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #004085;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
+
+.filtros select:hover {
+    background-color: #f0f4ff;
+}
+
+.filtros select:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 64, 133, 0.25);
+}
+
+.filtros button:hover {
+    background-color: rgba(0, 64, 133, 0.1);
+}
+
+
+/* .filtros {
+    display: flex;
+    gap: 20px;
+    align-items: flex-end;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.filtro-item {
+    color: #fff;
+    margin-bottom: 1.5rem;
+    font-size: 1.25rem;
+} */
+
 
 /* GRID DE REPORTES */
 .reportes-grid {
@@ -266,13 +380,7 @@ body {
 }
 
 .reporte-direccion {
-    font-weight: bold;
     color: #254F22;
-    margin-bottom: 0.5rem;
-}
-
-.reporte-comentario {
-    color: #666;
     font-size: 0.875rem;
     margin-bottom: 0.5rem;
     display: -webkit-box;
@@ -281,6 +389,26 @@ body {
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
+
+.reporte-comentario {
+    color: #666;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+
+    /* --- Estilo de cuadro --- */
+    background-color: #f8f9fa;   /* fondo suave */
+    border: 1px solid #ddd;      /* borde */
+    border-radius: 6px;          /* bordes redondeados */
+    padding: 0.75rem;            /* espacio interno */
+
+    /* mantiene el recorte a 2 líneas */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
 
 .reporte-footer {
     display: flex;
@@ -318,7 +446,7 @@ body {
 
 .reporte-fecha {
     font-size: 0.75rem;
-    color: #999;
+    color: #fff;
 }
 
 /* ESTADÍSTICAS */
@@ -383,7 +511,7 @@ body {
     right: 1rem;
     font-size: 2rem;
     cursor: pointer;
-    color: #999;
+    color: #fff;
 }
 
 .modal-close:hover {
@@ -548,7 +676,7 @@ body {
 .cargando {
     text-align: center;
     padding: 2rem;
-    color: #999;
+    color: #fff;
 }
 
 .oculto {
@@ -814,4 +942,52 @@ body {
     .login-shell .form-card {
         padding: 1.8rem 1.2rem 1.6rem;
     }
+}
+
+
+/* ─── MAPA FULLSCREEN RESPONSIVE ───────────────── */
+
+.seccion-mapa {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    z-index: 1;
+}
+
+/* El mapa ocupa TODO el espacio disponible */
+#mapa-reportes {
+    width: 100%;
+    height: 100%;
+}
+.footer {
+    background-color: #1f2937;
+    color: #e5e7eb;
+    padding: 2rem 1rem;
+    margin-top: 3rem;
+}
+
+.footer-container {
+    max-width: 1100px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+
+.footer-section h4 {
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+    color: #ffffff;
+}
+
+.footer-section p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+.main-content {
+    flex: 1;
 }
